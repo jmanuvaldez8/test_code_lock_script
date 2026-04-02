@@ -1,0 +1,119 @@
+name: Lock Code
+
+on:
+  workflow_dispatch:
+    inputs:
+      pe-stable:
+        description: "Update Payment Engine to Stable?"
+        required: true
+        default: "Yes"
+        type: choice
+        options:
+          - "Yes"
+          - "No"
+
+  push:
+    branches:
+      - "mvaldez-ck-patch-1" 
+
+permissions:
+  contents: write
+
+jobs:
+  create-rc:
+    runs-on: ubuntu-latest
+      
+    steps:
+      - name: Checkout repos
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+      
+      # - name: Increment current version variable
+        # id: increment_version
+        # env:
+          # GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # run: |
+          # v=${{ vars.CURRENT_VERSION }}
+          # base=${v%.*}
+          # patch=${v##*.}
+          # next="$base.$((patch+1))"
+          # echo "Next version: $next"
+          # #gh variable set CURRENT_VERSION --repo "$GITHUB_REPOSITORY" --body "$next"
+          # echo "next_version=$next" >> $GITHUB_OUTPUT
+
+      # - name: Generate branch name
+        # id: branch
+        # run: |
+          # DATE=$(date +'%Y/%m/%d')
+          # VERSION="${{ vars.CURRENT_VERSION }}"
+          # BRANCH="rc/$DATE-$VERSION"
+
+          # echo "branch_name=$BRANCH" >> $GITHUB_OUTPUT
+          # echo "Branch will be $BRANCH"
+
+      # - name: Create RC branch
+        # run: |
+          # git checkout master
+          # git pull origin master
+          # git checkout -b "${{ steps.branch.outputs.branch_name }}"
+          # git push origin "${{ steps.branch.outputs.branch_name }}"
+
+      # - name: Update repository variable
+        # env:
+            # GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # run: |
+          # PREV_RC=$(gh variable get CURRENT_RC_BRANCH --repo "$GITHUB_REPOSITORY" --json value -q .value)
+            # #gh variable set PREVIOUS_RC_BRANCH --body "$PREV_RC"
+            # #gh variable set CURRENT_RC_BRANCH --body "${{ steps.branch.outputs.branch_name }}"
+            # #gh variable set CURRENT_VERSION --body "$VERSION"
+
+      - name: Update publish workflow in previous RC branch
+        run: |
+          PREV_BRANCH="${{ vars.PREVIOUS_RC_BRANCH }}"
+
+          echo "Checking out previous RC branch: $PREV_BRANCH"
+
+          git fetch origin $PREV_BRANCH
+          git checkout $PREV_BRANCH
+
+          FILE="lock_code_test_folder/test-publish-pgw.yml"
+
+          if [ -f "$FILE" ]; then
+            echo "Updating $FILE"
+
+            # remove the rc trigger
+            sed -i "/- 'rc\/\/\//d" $FILE
+
+            # remove donotdeploy trigger
+            sed -i "/- '\/\*\/donotdeploy'/d" $FILE
+
+            git add $FILE
+            git commit -m "Disable publish triggers on previous RC branch" || echo "No changes"
+            git push origin $PREV_BRANCH
+          else
+            echo "$FILE not found"
+          fi
+
+          FILE_PRTL="lock_code_test_folder/test-publish-prtl.yml"
+
+          if [ -f "$FILE_PRTL" ]; then
+            echo "Updating $FILE_PRTL"
+
+            # remove the rc trigger
+            sed -i "/- 'rc\/\/\//d" $FILE_PRTL
+
+            # remove donotdeploy trigger
+            # sed -i "/- '\/\*\/donotdeploy'/d" $FILE
+
+            git add $FILE_PRTL
+            git commit -m "Disable publish triggers on previous RC branch" || echo "No changes"
+            git push origin $PREV_BRANCH
+          else
+            echo "$FILE_PRTL not found"
+          fi
