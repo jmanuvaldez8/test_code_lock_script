@@ -82,7 +82,7 @@ jobs:
           git fetch origin $PREV_BRANCH
           git checkout $PREV_BRANCH
 
-          FILE="lock_code_test_folder/test-publish-pgw.yml"
+          FILE="lock_code_test_folder/publish-pgw.yml"
 
           if [ -f "$FILE" ]; then
             echo "Updating $FILE"
@@ -100,7 +100,7 @@ jobs:
             echo "$FILE not found"
           fi
 
-          FILE_PRTL="lock_code_test_folder/test-publish-prtl.yml"
+          FILE_PRTL="lock_code_test_folder/publish-prtl.yml"
 
           if [ -f "$FILE_PRTL" ]; then
             echo "Updating $FILE_PRTL"
