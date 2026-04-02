@@ -1,0 +1,11 @@
+name: Publish PGW
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "rc/*/*/*"
+
+concurrency:
+  group: action
+ 
