@@ -87,11 +87,8 @@ jobs:
           if [ -f "$FILE" ]; then
             echo "Updating $FILE"
 
-            # remove the rc trigger
-            sed -i "/- 'rc\/\/\//d" $FILE
-
-            # remove donotdeploy trigger
-            sed -i "/- '\/\*\/donotdeploy'/d" $FILE
+            # This deletes the 'branches' key and everything under it
+            yq -i 'del(.push.branches)' $FILE
 
             git add $FILE
             git commit -m "Disable publish triggers on previous RC branch" || echo "No changes"
