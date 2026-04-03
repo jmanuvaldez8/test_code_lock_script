@@ -125,7 +125,8 @@ jobs:
 
       - name: Set ReleaseChannel to stable
         run: |
-          if [inputs.pe-stable == 'Yes']; then
+          if [${{ inputs.pe-stable}} == 'Yes']; then
+          
             PREV_BRANCH="${{ vars.PREVIOUS_RC_BRANCH }}"
             git checkout $PREV_BRANCH
             
