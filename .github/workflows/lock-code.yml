@@ -97,13 +97,6 @@ jobs:
             git add $FILE
             git commit -m "Disable publish triggers on previous RC branch" || echo "No changes"
             git push origin $PREV_BRANCH
-
-            # 4. Create the Pull Request using GitHub CLI
-            gh pr create \
-            --title "Automated YAML Update" \
-            --body "This PR was created using the gh cli in a GitHub Action." \
-            --base main \
-            --head $PREV_BRANCH
           else
             echo "$FILE not found"
           fi
@@ -113,17 +106,19 @@ jobs:
           if [ -f "$FILE_PRTL" ]; then
             echo "Updating $FILE_PRTL"
 
-            # remove the rc trigger
-            sed -i "/- 'rc\/\/\//d" $FILE_PRTL
-
-            # remove donotdeploy trigger
-            # sed -i "/- '\/\*\/donotdeploy'/d" $FILE
+            # This deletes the 'branches' key and everything under it
+            yq -i 'del(.on.push)' $FILE_PRTL
 
             git add $FILE_PRTL
             git commit -m "Disable publish triggers on previous RC branch" || echo "No changes"
-            git push origin $PREV_BRANCH
+            git push origin $PREV_BRANCH            
           else
             echo "$FILE_PRTL not found"
           fi
-      
-          
+
+          # 4. Create the Pull Request using GitHub CLI
+          gh pr create \
+          --title "Automated YAML Update" \
+          --body "This PR was created using the gh cli in a GitHub Action." \
+          --base main \
+          --head $PREV_BRANCH
