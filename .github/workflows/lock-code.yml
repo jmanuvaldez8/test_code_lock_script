@@ -127,15 +127,15 @@ jobs:
         run: |
           if [inputs.pe-stable == 'Yes']; then
             PREV_BRANCH="${{ vars.PREVIOUS_RC_BRANCH }}"
-              git checkout $PREV_BRANCH
-              
-              FILE="lock_code_test_folder/xVersion.vb"
-              sed -i 's/\(ReleaseChannel.*=\).*/\1 "stable"/' $FILE
-              #sed -i 's/\(Public Const zzzzz1 As String = \)".*"/\1"beta"/' version.vb
-
-              git add $FILE
-              git commit -m "Set ReleaseChannel to stable for previous RC branch"
-              git push origin $PREV_BRANCH
+            git checkout $PREV_BRANCH
+            
+            FILE="lock_code_test_folder/xVersion.vb"
+            sed -i 's/\(ReleaseChannel.*=\).*/\1 "stable"/' $FILE
+            #sed -i 's/\(Public Const zzzzz1 As String = \)".*"/\1"beta"/' version.vb
+            
+            git add $FILE
+            git commit -m "Set ReleaseChannel to stable for previous RC branch"
+            git push origin $PREV_BRANCH
           else
             echo "no update of PE to stable"
           fi
