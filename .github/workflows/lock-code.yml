@@ -130,7 +130,7 @@ jobs:
           git checkout $PREV_BRANCH
           
           FILE="lock_code_test_folder/xVersion.vb"
-          sed -i 's/\(ReleaseChannel.*=\).*/\1 "stable"/' $FILE
+          sed -i 's/\(Public Const ReleaseChannel.*=\).*/\1 "stable"/' $FILE
           #sed -i 's/\(Public Const zzzzz1 As String = \)".*"/\1"beta"/' version.vb
           
           git add $FILE
@@ -143,8 +143,7 @@ jobs:
           git checkout $CURRENT_RC_BRANCH
           
           FILE="lock_code_test_folder/xVersion.vb"
-          sed -i 's/\(ReleaseChannel.*=\).*/\1 "beta"/' $FILE
-          #sed -i 's/\(Public Const zzzzz1 As String = \)".*"/\1"beta"/' version.vb
+          sed -i 's/\(Public Const ReleaseChannel.*=\).*/\1 "beta"/' $FILE          
           
           git add $FILE
           git commit -m "Set ReleaseChannel to beta for current RC branch"
