@@ -125,6 +125,8 @@ jobs:
           --base $PREV_RC_BRANCH \
           --head $PATCH_BRANCH
 
+          echo "inputs.pe-stable ${{inputs.pe-stable}}"
+
       - name: Sleep for 30 seconds
         run: sleep 30s
         shell: bash
