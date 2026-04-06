@@ -120,7 +120,7 @@ jobs:
           
           #Set ReleaseChannel to stable in previous RC branch
           echo "inputs.pe-stable ${{inputs.pe-stable}}"
-          if ${{inputs.pe-stable}} == 'Yes'; then
+          if [${{inputs.pe-stable}}=='Yes']; then
             FILE_VERSION="lock_code_test_folder/xVersion.vb"
             sed -i 's/\(Public Const ReleaseChannel.*=\).*/\1 "stable"/' $FILE_VERSION
             #sed -i 's/\(Public Const zzzzz1 As String = \)".*"/\1"beta"/' version.vb
@@ -142,7 +142,7 @@ jobs:
       - name: Set ReleaseChannel to beta in new RC branch
         run: |          
           CURRENT_RC_BRANCH="${{ vars.CURRENT_RC_BRANCH }}"
-          PATCH_BRANCH = "UpdatePublishWorkflowCurrentRC-$(date +%Y%m%d-%H%M%S)"
+          PATCH_BRANCH="UpdatePublishWorkflowCurrentRC-$(date +%Y%m%d-%H%M%S)"
           
           git fetch origin $CURRENT_RC_BRANCH
           git checkout $CURRENT_RC_BRANCH
