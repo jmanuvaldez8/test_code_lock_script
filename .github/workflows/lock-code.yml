@@ -84,7 +84,7 @@ jobs:
           #PATCH_BRANCH = "UpdatePublishWorkflowPreviousRC-$(date +%Y%m%d-%H%M%S)"
           
 
-          git fetch origin $PREV_RC_BRANCH
+          git fetch origin $PREV_RC_BRANCH:$PREV_RC_BRANCH
           git checkout $PREV_RC_BRANCH
 
           # echo "Checking out previous RC branch: $PREV_RC_BRANCH"          
