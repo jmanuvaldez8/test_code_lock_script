@@ -127,8 +127,8 @@ jobs:
 
       - name: Set ReleaseChannel to stable in previous RC branch
         if: inputs.pe-stable == 'Yes'
-        run: |          
-          #PREV_RC_BRANCH="${{ vars.PREVIOUS_RC_BRANCH }}"
+        run: |                    
+          git fetch origin $PATCH_BRANCH
           git checkout $PATCH_BRANCH
           
           FILE="lock_code_test_folder/xVersion.vb"
