@@ -82,8 +82,8 @@ jobs:
           PREV_RC_BRANCH="${{ vars.PREVIOUS_RC_BRANCH }}"
           #echo "num=$(( $RANDOM % 100 + 1 ))" >> $GITHUB_OUTPUT
           PATCH_BRANCH="UpdatePublishWorkflowPreviousRC-$(date +%Y%m%d-%H%M%S)"
+          echo "PATCH_BRANCH $PATCH_BRANCH"
           
-
           git fetch origin $PREV_RC_BRANCH
           git checkout $PREV_RC_BRANCH
 
