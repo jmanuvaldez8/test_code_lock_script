@@ -119,7 +119,7 @@ jobs:
           fi
           
           #Set ReleaseChannel to stable in previous RC branch
-          echo "inputs.pe-stable ${{inputs.pe-stable}} * ${{inputs.pe-stable}}=='Yes'"
+          #echo "inputs.pe-stable ${{inputs.pe-stable}} * ${{inputs.pe-stable}}=='Yes'"
           if ${{inputs.pe-stable}}=='Yes'; then
             FILE_VERSION="lock_code_test_folder/xVersion.vb"
             sed -i 's/\(Public Const ReleaseChannel.*=\).*/\1 "stable"/' $FILE_VERSION
@@ -140,6 +140,8 @@ jobs:
           --head $PATCH_BRANCH
 
       - name: Set ReleaseChannel to beta in new RC branch
+        env:
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |          
           CURRENT_RC_BRANCH="${{ vars.CURRENT_RC_BRANCH }}"
           PATCH_BRANCH="UpdatePublishWorkflowCurrentRC-$(date +%Y%m%d-%H%M%S)"
