@@ -80,7 +80,8 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           PREV_RC_BRANCH = "${{ vars.PREVIOUS_RC_BRANCH }}"
-          PATCH_BRANCH = UpdatePublishWorkflowPreviousRC-$(date +%Y%m%d-%H%M%S)
+          PATCH_BRANCH = "UpdatePublishWorkflowPreviousRC-$(date +%Y%m%d-%H%M%S)"
+          
 
           git fetch origin $PREV_RC_BRANCH
           git checkout $PREV_RC_BRANCH
@@ -142,7 +143,7 @@ jobs:
       - name: Set ReleaseChannel to beta in new RC branch
         run: |          
           CURRENT_RC_BRANCH="${{ vars.CURRENT_RC_BRANCH }}"
-          PATCH_BRANCH = UpdatePublishWorkflowCurrentRC-$(date +%Y%m%d-%H%M%S)
+          PATCH_BRANCH = "UpdatePublishWorkflowCurrentRC-$(date +%Y%m%d-%H%M%S)"
           
           git fetch origin $CURRENT_RC_BRANCH
           git checkout $CURRENT_RC_BRANCH
