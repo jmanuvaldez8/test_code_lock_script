@@ -125,11 +125,15 @@ jobs:
           --base $PREV_RC_BRANCH \
           --head $PATCH_BRANCH
 
+      - name: Sleep for 30 seconds
+        run: sleep 30s
+        shell: bash
+
       - name: Set ReleaseChannel to stable in previous RC branch
         if: inputs.pe-stable == 'Yes'
         run: |                    
           git fetch origin $PATCH_BRANCH
-          git checkout $PATCH_BRANCH
+          git checkout $PATCH_BRANCH          
           
           FILE="lock_code_test_folder/xVersion.vb"
           sed -i 's/\(Public Const ReleaseChannel.*=\).*/\1 "stable"/' $FILE
