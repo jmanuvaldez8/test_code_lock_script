@@ -80,7 +80,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           PREV_RC_BRANCH = "${{ vars.PREVIOUS_RC_BRANCH }}"
-          echo "num=$(( $RANDOM % 100 + 1 ))"
+          run: echo "num=$(( $RANDOM % 100 + 1 ))" >> $GITHUB_OUTPUT
           #PATCH_BRANCH = "UpdatePublishWorkflowPreviousRC-$(date +%Y%m%d-%H%M%S)"
           
 
