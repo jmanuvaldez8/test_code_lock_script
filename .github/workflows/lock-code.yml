@@ -24,6 +24,7 @@ permissions:
 jobs:
   create-rc:
     runs-on: ubuntu-latest
+    
       
     steps:
       - name: Checkout repos
@@ -76,9 +77,12 @@ jobs:
             # #gh variable set CURRENT_VERSION --body "$VERSION"
 
       - name: Update publish workflow in previous RC branch
+        #uses: mikefarah/yq@v4.44.3
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
         run: |
+          CURRENT_VER=$(yq '.version' lock-code.yml)
+          echo $CURRENT_VER
           PREV_RC_BRANCH="${{ vars.PREVIOUS_RC_BRANCH }}"
           PATCH_BRANCH="UpdatePublishWorkflowPreviousRC-$(date +%Y%m%d-%H%M%S)"
 
