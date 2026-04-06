@@ -76,13 +76,14 @@ jobs:
             # #gh variable set CURRENT_RC_BRANCH --body "${{ steps.branch.outputs.branch_name }}"
             # #gh variable set CURRENT_VERSION --body "$VERSION"
 
+      - name: Check yq version
+        run: yq --version
+
       - name: Update publish workflow in previous RC branch
         #uses: mikefarah/yq@v4.44.3
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
         run: |
-          CURRENT_VER=$(yq '.version' test_code_lock_script/.github/workflows/lock-code.yml)
-          echo $CURRENT_VER
           PREV_RC_BRANCH="${{ vars.PREVIOUS_RC_BRANCH }}"
           PATCH_BRANCH="UpdatePublishWorkflowPreviousRC-$(date +%Y%m%d-%H%M%S)"
 
