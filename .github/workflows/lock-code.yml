@@ -128,7 +128,9 @@ jobs:
             git add $FILE_VERSION
             git commit -m "Set ReleaseChannel to stable for previous RC branch"
             git push origin $PATCH_BRANCH
-
+          else
+            echo "NO ReleaseChannel to stable in previous RC branch"
+          fi
           
           # 4. Create the Pull Request using GitHub CLI
           gh pr create \
