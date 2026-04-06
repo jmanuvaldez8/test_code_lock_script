@@ -123,7 +123,7 @@ jobs:
           --base main \
           --head $PREV_BRANCH
 
-      - name: Set ReleaseChannel to stable
+      - name: Set ReleaseChannel to stable in previous RC branch
         if: inputs.pe-stable == 'Yes'
         run: |          
           PREV_BRANCH="${{ vars.PREVIOUS_RC_BRANCH }}"
@@ -136,4 +136,17 @@ jobs:
           git add $FILE
           git commit -m "Set ReleaseChannel to stable for previous RC branch"
           git push origin $PREV_BRANCH
+
+      - name: Set ReleaseChannel to beta in new RC branch
+        run: |          
+          CURRENT_RC_BRANCH="${{ vars.CURRENT_RC_BRANCH }}"
+          git checkout $CURRENT_RC_BRANCH
+          
+          FILE="lock_code_test_folder/xVersion.vb"
+          sed -i 's/\(ReleaseChannel.*=\).*/\1 "beta"/' $FILE
+          #sed -i 's/\(Public Const zzzzz1 As String = \)".*"/\1"beta"/' version.vb
+          
+          git add $FILE
+          git commit -m "Set ReleaseChannel to beta for current RC branch"
+          git push origin $CURRENT_RC_BRANCH          
           
