@@ -81,7 +81,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
         run: |
-          CURRENT_VER=$(yq '.version' lock-code.yml)
+          CURRENT_VER=$(yq '.version' test_code_lock_script/.github/workflows/lock-code.yml)
           echo $CURRENT_VER
           PREV_RC_BRANCH="${{ vars.PREVIOUS_RC_BRANCH }}"
           PATCH_BRANCH="UpdatePublishWorkflowPreviousRC-$(date +%Y%m%d-%H%M%S)"
