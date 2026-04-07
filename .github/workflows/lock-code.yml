@@ -45,8 +45,8 @@ jobs:
           CURRENT_RC_BRANCH="${{ vars.CURRENT_RC_BRANCH }}"
           PATCH_BRANCH="UpdateMergifyWorkflowMaster-$(date +%Y%m%d-%H%M%S)"
           
-          git fetch origin master
-          git checkout master
+          git fetch origin main
+          git checkout main
 
           echo "Checking out new branch: $PATCH_BRANCH"          
           git checkout -b $PATCH_BRANCH
