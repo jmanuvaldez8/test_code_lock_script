@@ -6,7 +6,7 @@ pull_request_rules:
     actions:
       backport:
         branches:
-          - rc/2026/03/18-2.81
+          - 1
         labels:
           - backported
         label_conflicts: backport conflict
