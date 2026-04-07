@@ -162,7 +162,21 @@ jobs:
           
           git add $FILE
           git commit -m "Set ReleaseChannel to beta for current RC branch"
-          git push origin $PATCH_BRANCH          
+          git push origin $PATCH_BRANCH
+
+          #Update Codeowners
+          echo "updating codeowners on $PATCH_BRANCH"
+
+          git fetch origin $CURRENT_RC_BRANCH
+          git checkout $CURRENT_RC_BRANCH
+
+          mkdir -p .github
+          FILE_CODEOWN="lock_code_test_folder/CODEOWNERS"
+          echo "* @ckps/qa" > $FILE_CODEOWN
+
+          git add $FILE_CODEOWN
+          git commit -m "Update codeowners for current RC"
+          git push origin $PATCH_BRANCH
           
           # 4. Create the Pull Request using GitHub CLI
           gh pr create \
