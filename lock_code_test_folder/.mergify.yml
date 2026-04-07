@@ -1,3 +1,4 @@
+pull_request_rules:
   - name: backport to rc
     conditions:
       - base=master
