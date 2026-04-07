@@ -60,7 +60,7 @@ jobs:
             #yq -i 'del(.on.push)' $FILE
             #yq -i '.pull_request_rules.database.host = "localhost"' $FILE
             # Updates the 'image' value only for the entry where 'name' is 'nginx'
-            yq -i '(.pull_request_rules[] | select(.name == "backport to rc")).actions.backport.branches[0] = $CURRENT_RC_BRANCH' $FILE
+            yq -i '(.pull_request_rules[] | select(.name == "backport to rc")).actions.backport.branches[0] = 1' $FILE
             #yq -i '(.pull_request_rules[] | select(.name == "backport to rc")).actions.backport.branches[0] = "${{ github.event.inputs.new_version }}"' .mergify.yml
 
             git add $FILE
