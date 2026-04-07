@@ -1,0 +1,30 @@
+  - name: backport to rc
+    conditions:
+      - base=master
+      - label=backport to last rc
+    actions:
+      backport:
+        branches:
+          - rc/2026/03/18-2.86
+        labels:
+          - backported
+        label_conflicts: backport conflict
+        assignees:
+          - "{{author}}"
+  - name: backport to penultimate rc
+    conditions:
+      - base=master
+      - label=backport to second-last rc
+    actions:
+      backport:
+        branches:
+          - rc/2026/02/18-2.85
+        labels:
+          - backported
+        label_conflicts: backport conflict
+        assignees:
+          - "{{author}}"
+  - name: message on build check failure
+    conditions:
+      - check-failure=build
+      - -closed
