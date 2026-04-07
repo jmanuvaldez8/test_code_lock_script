@@ -167,8 +167,8 @@ jobs:
           #Update Codeowners
           echo "updating codeowners on $PATCH_BRANCH"
 
-          git fetch origin $CURRENT_RC_BRANCH
-          git checkout $CURRENT_RC_BRANCH
+          git fetch origin $PATCH_BRANCH
+          git checkout $PATCH_BRANCH
 
           FILE_CODEOWN="lock_code_test_folder/CODEOWNERS"
           echo "* @ckps/qa" > $FILE_CODEOWN
