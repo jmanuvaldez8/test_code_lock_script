@@ -47,7 +47,8 @@ jobs:
           echo "Checking out new branch: $PATCH_BRANCH"          
           git checkout -b $PATCH_BRANCH
 
-          FILE="mgmt/app-pipelines/ppfe/parameters/ppfe-data-pipeline-prd.json"
+          FILE="mgmt/app-pipelines/vaas/parameters/vaas-setup-pipeline-prd.json"
+
 
           if [ -f "$FILE" ]; then
             echo "Updating $FILE"
