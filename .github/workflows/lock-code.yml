@@ -74,7 +74,7 @@ jobs:
           #Update the version number for PaymentEngine in Master
           FUTURE_VERSION="${{ vars.FUTURE_VERSION }}"
           FILE="lock_code_test_folder/xVersion.vb"
-          sed -i 's/\(Public Const MyAssemblyVersionCore As String.*=\).*/\1 "$FUTURE_VERSION"/' $FILE          
+          sed -i 's/\(Public Const MyAssemblyVersionCore As String.*=\).*/\1 "${{ vars.FUTURE_VERSION }}"/' $FILE          
           
           git add $FILE
           git commit -m "Set MyAssemblyVersionCore to future version"
