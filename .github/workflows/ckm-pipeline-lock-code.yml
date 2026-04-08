@@ -1,0 +1,70 @@
+name: CKM lock code Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      run-pipeline:
+        description: "Update CKM Pipeline?"
+        required: true
+        default: "Yes"
+        type: choice
+        options:
+          - "Yes"
+          - "No"
+
+permissions:
+  contents: write
+  pull-requests: write
+  repository-projects: write
+
+jobs:
+  create-rc:
+    runs-on: ubuntu-latest
+    
+      
+    steps:
+      - name: Checkout repos
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"      
+
+      - name: Update .mergify.yml workflow in master
+        if: github.event.inputs.run-pipeline == 'Yes'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
+        run: |
+          CURRENT_RC_BRANCH="${{ vars.CURRENT_RC_BRANCH }}"
+          PATCH_BRANCH="UpdateCkmPipelineMaster-$(date +%Y%m%d-%H%M%S)"
+          
+          git fetch origin main
+          git checkout main
+
+          echo "Checking out new branch: $PATCH_BRANCH"          
+          git checkout -b $PATCH_BRANCH
+
+          FILE="mgmt/app-pipelines/ppfe/parameters/ppfe-data-pipeline-prd.json"
+
+          if [ -f "$FILE" ]; then
+            echo "Updating $FILE"
+
+            # This update the 'branches' key and for backport
+            jq --arg val "$CURRENT_RC_BRANCH" '.Parameters.BranchName = $val' "$FILE" > temp.json && mv temp.json "$FILE"
+
+            git add $FILE
+            git commit -m "Disable publish triggers on previous RC branch"
+            git push origin $PATCH_BRANCH
+          else
+            echo "$FILE not found"
+          fi
+          
+          # 4. Create the Pull Request using GitHub CLI
+          gh pr create \
+          --title "Automated YAML Update" \
+          --body "This PR was created using the gh cli in a GitHub Action." \
+          --base main \
+          --head $PATCH_BRANCH
