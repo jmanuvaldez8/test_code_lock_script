@@ -44,7 +44,7 @@ jobs:
           next="$base.$((patch+1))"
           echo "next version: $next"
           gh variable set CURRENT_VERSION --body "$next"      
-          echo "current_version_updated=$next" >> "$GITHUB_OUTPUT"
+          echo "current_version_updated=$next" >> $GITHUB_OUTPUT
 
       - name: generate branch name
         env:
@@ -52,7 +52,7 @@ jobs:
         run: |
           CURRENT_RC_BRANCH="${{ vars.CURRENT_RC_BRANCH }}"
           date=$(date +'%yyyy/%m/%d')
-          version="${{ steps.increment_current_version_variable.current_version_updated }}"
+          version="${{ steps.increment_current_version_variable.outputs.current_version_updated }}"
           branch="rc/$date-$version"          
           echo "branch will be $branch"
           gh variable set PREVIOUS_RC_BRANCH --body "${{ vars.CURRENT_RC_BRANCH }}"
