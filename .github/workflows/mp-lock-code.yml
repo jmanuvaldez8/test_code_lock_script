@@ -43,6 +43,7 @@ jobs:
           next="$base.$((patch+1))"
           echo "next version: $next"
           #gh variable set current_version --repo "$github_repository" --body "$next"
+          gh variable set CURRENT_VERSION --body "$next"
           echo "next_version=$next" >> $github_output
 
       - name: generate branch name
