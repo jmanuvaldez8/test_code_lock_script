@@ -34,9 +34,8 @@ jobs:
           git config user.email "github-actions@github.com"
       
       - name: increment current version variable
-        id: increment_version
         env:
-          gh_token: ${{ secrets.github_token }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           v=${{ vars.current_version }}
           base=${v%.*}
