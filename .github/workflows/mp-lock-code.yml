@@ -47,14 +47,16 @@ jobs:
           echo "current_version_updated=$next" >> $GITHUB_OUTPUT
 
       - name: generate branch name
+        id: generate_branch_name
         env:
           GH_TOKEN: ${{ secrets.TEST_VAR_WRITE_TOKEN }}
         run: |
           CURRENT_RC_BRANCH="${{ vars.CURRENT_RC_BRANCH }}"
-          date=$(date +'%yyyy/%m/%d')
+          date=$(date +'%Y/%m/%d')
           version="${{ steps.increment_current_version_variable.outputs.current_version_updated }}"
           branch="rc/$date-$version"          
           echo "branch will be $branch"
+          echo "current_rc_branch_updated=$branch" >> $GITHUB_OUTPUT
           gh variable set PREVIOUS_RC_BRANCH --body "${{ vars.CURRENT_RC_BRANCH }}"
           gh variable set CURRENT_RC_BRANCH --body "$branch"
             
@@ -62,8 +64,8 @@ jobs:
         run: |
           git checkout main
           git pull origin main
-          git checkout -b "${{ vars.CURRENT_RC_BRANCH }}"
-          git push origin "${{ vars.CURRENT_RC_BRANCH }}"
+          git checkout -b "${{ steps.generate_branch_name.outputs.current_rc_branch_updated }}"
+          git push origin "${{ steps.generate_branch_name.outputs.current_rc_branch_updated }}"
 
 
       # - name: Update publish workflow in previous RC branch
