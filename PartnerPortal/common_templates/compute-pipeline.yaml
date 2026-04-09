@@ -1,9 +1,7 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: 1111
-
 Description: "test"
-
 Parameters:
   AppName:
     Description: aaaa
@@ -19,13 +17,12 @@ Parameters:
   ApproverEmail:
     Type: String
     Description: vvvv
-
 Resources:
-#
-# ----------------------------------------------------------------------------------------------------------#
-# ---------- Topic to notify Manual steps ----------------------------------------------#
-# ----------------------------------------------------------------------------------------------------------#
-#
+  #
+  # ----------------------------------------------------------------------------------------------------------#
+  # ---------- Topic to notify Manual steps ----------------------------------------------#
+  # ----------------------------------------------------------------------------------------------------------#
+  #
   ProdApproversSNSTopic:
     Type: eeeeeeeeeeeeee
     Properties:
@@ -34,11 +31,11 @@ Resources:
         - Endpoint: qqqqqqqqqqqqq
           Protocol: email
       TopicName: wwwwwwwwwwwwwwwww
-#
-# ----------------------------------------------------------------------------------------------------------#
-# ---------- Artifacts Bucket ----------------------------------------------#
-# ----------------------------------------------------------------------------------------------------------#
-#
+      #
+      # ----------------------------------------------------------------------------------------------------------#
+      # ---------- Artifacts Bucket ----------------------------------------------#
+      # ----------------------------------------------------------------------------------------------------------#
+      #
   S3BucketArtifacts:
     Properties:
       BucketName: hhhhhhhhhhhhhhhh
@@ -50,18 +47,17 @@ Resources:
         IgnorePublicAcls: true
         RestrictPublicBuckets: true
     Type: jjjjjjjjjjjjjj
-#
-# ----------------------------------------------------------------------------------------------------------#
-# ---------- Codebuild triggered by github event ----------------------------------------------#
-# ----------------------------------------------------------------------------------------------------------#
-#
+    #
+    # ----------------------------------------------------------------------------------------------------------#
+    # ---------- Codebuild triggered by github event ----------------------------------------------#
+    # ----------------------------------------------------------------------------------------------------------#
+    #
   CodeBuildSourceCredential:
     Type: jjjjjjjjjjjjjjjj
     Properties:
       AuthType: Pxxxxxxxxxxxxxxxxxxx
       ServerType: GITHUB
       Token: ggggggggggggggggg
-
   CodeBuildPPFESource:
     Type: sdffffffffff
     Properties:
@@ -87,7 +83,7 @@ Resources:
               Pattern: !Ref dddsd
       Environment:
         Type: LINUX_CONTAINER
-          # Image: aws/codebuild/standard:2.0
+        # Image: aws/codebuild/standard:2.0
         ComputeType: BUILD_GENERAL1_SMALL
         Image: cccccccc
         EnvironmentVariables:
@@ -102,9 +98,8 @@ Resources:
       LogsConfig:
         CloudWatchLogs:
           Status: ENABLED
-            # GroupName: !Sub ${CodeBuildCIBFFProjectName}-CloudWatchLogs-BuildLogGroup-Name
+          # GroupName: !Sub ${CodeBuildCIBFFProjectName}-CloudWatchLogs-BuildLogGroup-Name
       TimeoutInMinutes: 15
-
   TriggerPipelineOnSuccessSource:
     Type: bbbbbbbbbbbbbb
     Properties:
@@ -125,12 +120,11 @@ Resources:
         - Arn: fffffffffffffffffff
           Id: hhhhhhhhhhhhhhhhhhh
           RoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/ck-ppfe-compute-pipeline-start-r
-
-#
-# ----------------------------------------------------------------------------------------------------------#
-# ---------- Staging pipeline  ----------------------------------------------#
-# ----------------------------------------------------------------------------------------------------------#
-#
+          #
+          # ----------------------------------------------------------------------------------------------------------#
+          # ---------- Staging pipeline  ----------------------------------------------#
+          # ----------------------------------------------------------------------------------------------------------#
+          #
   PPFEComputeStaging:
     Type: "cccc"
     Properties:
@@ -140,11 +134,9 @@ Resources:
         Type: "S3"
       RoleArn: !fghhgfhfghgfh
       Stages:
-        -
-          Name: Source
+        - Name: Source
           Actions:
-            -
-              Name: Source
+            - Name: Source
               ActionTypeId:
                 Category: Source
                 Owner: ThirdParty
@@ -159,11 +151,9 @@ Resources:
               OutputArtifacts:
                 - Name: source
               RunOrder: 1
-        -
-          Name: Build
+        - Name: Build
           Actions:
-            -
-              Name: Build
+            - Name: Build
               ActionTypeId:
                 Category: Build
                 Version: "1"
@@ -178,11 +168,9 @@ Resources:
               OutputArtifacts:
                 - Name: build
               Namespace: buildApp
-        -
-          Name: DeployStaging
+        - Name: DeployStaging
           Actions:
-            -
-              Name: StagingDeploy
+            - Name: StagingDeploy
               ActionTypeId:
                 Category: Build
                 Version: "1"
@@ -197,11 +185,9 @@ Resources:
                 - Name: source
                 - Name: build
               Namespace: deploystaging
-        -
-          Name: ManualApproval
+        - Name: ManualApproval
           Actions:
-            -
-              Name: "ManualApproval"
+            - Name: "ManualApproval"
               ActionTypeId:
                 Category: "Approval"
                 Owner: "AWS"
@@ -229,3 +215,7 @@ Resources:
               InputArtifacts:
                 - Name: build
                 - Name: source
+resources:
+  PPFEComputeStaging:
+    Properties:
+      Stages: []
