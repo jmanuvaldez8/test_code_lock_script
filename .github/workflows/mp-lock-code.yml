@@ -105,6 +105,47 @@ jobs:
           --body "This PR was created using the gh cli in a GitHub Action." \
           --base main \
           --head $PATCH_BRANCH
+          
+      - name: Update code owners to require QA approval for backport PRs
+        env:
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |          
+          CURRENT_RC_BRANCH="${{ vars.CURRENT_RC_BRANCH }}"
+          PATCH_BRANCH="UpdatePublishWorkflowCurrentRC-$(date +%Y%m%d-%H%M%S)"
+          
+          git fetch origin $CURRENT_RC_BRANCH
+          git checkout $CURRENT_RC_BRANCH
+
+          echo "Checking out current RC branch: $CURRENT_RC_BRANCH"          
+          git checkout -b $PATCH_BRANCH
+          
+          FILE="lock_code_test_folder/xVersion.vb"
+          sed -i 's/\(Public Const ReleaseChannel.*=\).*/\1 "beta"/' $FILE          
+          
+          git add $FILE
+          git commit -m "Set ReleaseChannel to beta for current RC branch"
+          git push origin $PATCH_BRANCH
+
+          #Update Codeowners
+          echo "updating codeowners on $PATCH_BRANCH"
+
+          git fetch origin $PATCH_BRANCH
+          git checkout $PATCH_BRANCH
+
+          FILE_CODEOWN="lock_code_test_folder/CODEOWNERS"
+          echo "* @ckps/qa" > $FILE_CODEOWN
+
+          git add $FILE_CODEOWN
+          git commit -m "Update codeowners for current RC"
+          git push origin $PATCH_BRANCH
+          
+          # 4. Create the Pull Request using GitHub CLI
+          gh pr create \
+          --title "Automated YAML Update" \
+          --body "This PR was created using the gh cli in a GitHub Action." \
+          --base $CURRENT_RC_BRANCH \
+          --head $PATCH_BRANCH
+          
 
       # - name: Update publish workflow in previous RC branch
         # #uses: mikefarah/yq@v4.44.3
@@ -171,44 +212,6 @@ jobs:
           # --base $PREV_RC_BRANCH \
           # --head $PATCH_BRANCH
 
-      # - name: Set ReleaseChannel to beta in new RC branch
-        # env:
-            # GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        # run: |          
-          # CURRENT_RC_BRANCH="${{ vars.CURRENT_RC_BRANCH }}"
-          # PATCH_BRANCH="UpdatePublishWorkflowCurrentRC-$(date +%Y%m%d-%H%M%S)"
-          
-          # git fetch origin $CURRENT_RC_BRANCH
-          # git checkout $CURRENT_RC_BRANCH
 
-          # echo "Checking out current RC branch: $CURRENT_RC_BRANCH"          
-          # git checkout -b $PATCH_BRANCH
-          
-          # FILE="lock_code_test_folder/xVersion.vb"
-          # sed -i 's/\(Public Const ReleaseChannel.*=\).*/\1 "beta"/' $FILE          
-          
-          # git add $FILE
-          # git commit -m "Set ReleaseChannel to beta for current RC branch"
-          # git push origin $PATCH_BRANCH
-
-          # #Update Codeowners
-          # echo "updating codeowners on $PATCH_BRANCH"
-
-          # git fetch origin $PATCH_BRANCH
-          # git checkout $PATCH_BRANCH
-
-          # FILE_CODEOWN="lock_code_test_folder/CODEOWNERS"
-          # echo "* @ckps/qa" > $FILE_CODEOWN
-
-          # git add $FILE_CODEOWN
-          # git commit -m "Update codeowners for current RC"
-          # git push origin $PATCH_BRANCH
-          
-          # # 4. Create the Pull Request using GitHub CLI
-          # gh pr create \
-          # --title "Automated YAML Update" \
-          # --body "This PR was created using the gh cli in a GitHub Action." \
-          # --base $CURRENT_RC_BRANCH \
-          # --head $PATCH_BRANCH
         
           
