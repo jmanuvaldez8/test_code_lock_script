@@ -62,8 +62,8 @@ jobs:
         run: |
           git checkout main
           git pull origin main
-          git checkout -b "${{ steps.branch.outputs.branch_name }}"
-          git push origin "${{ steps.branch.outputs.branch_name }}"
+          git checkout -b "${{ vars.CURRENT_RC_BRANCH }}"
+          git push origin "${{ vars.CURRENT_RC_BRANCH }}"
 
 
       # - name: Update publish workflow in previous RC branch
