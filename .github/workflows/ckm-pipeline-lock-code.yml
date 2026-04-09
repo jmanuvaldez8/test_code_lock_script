@@ -47,13 +47,15 @@ jobs:
           echo "Checking out new branch: $PATCH_BRANCH"          
           git checkout -b $PATCH_BRANCH
 
-          FILE="mgmt/app-pipelines/ppfe/parameters/ppfe-data-pipeline-prd.json"
+          FILE="mgmt/app-pipelines/vaas/parameters/vaas-setup-pipeline-prd.json"
+
 
           if [ -f "$FILE" ]; then
             echo "Updating $FILE"
 
             # This update the 'branches' key and for backport
-            jq --arg val "$CURRENT_RC_BRANCH" '.Parameters.BranchName = $val' "$FILE" > temp.json && mv temp.json "$FILE"
+            #jq --arg val "$CURRENT_RC_BRANCH" '.Parameters.BranchName = $val' "$FILE" > temp.json && mv temp.json "$FILE"
+            sed -i "s|\(\"BranchName\": \)\"[^\"]*\"|\1\"$CURRENT_RC_BRANCH\"|" $FILE
 
             git add $FILE
             git commit -m "Disable publish triggers on previous RC branch"
