@@ -56,7 +56,7 @@ jobs:
           version="${{ steps.increment_current_version_variable.outputs.current_version_updated }}"
           #branch="rc/$date-$version"
           branch="rc/${date}-${version}-mp"
-          echo "branch will be $branch"
+          echo "branch will be $branch and previous is $CURRENT_RC_BRANCH"          
           echo "current_rc_branch_updated=$branch" >> $GITHUB_OUTPUT
           echo "previous_rc_branch_updated=$CURRENT_RC_BRANCH" >> $GITHUB_OUTPUT
           gh variable set PREVIOUS_RC_BRANCH --body "${{ vars.CURRENT_RC_BRANCH }}"
