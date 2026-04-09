@@ -1,0 +1,177 @@
+name: Merchant Portal lock code
+
+on:
+  workflow_dispatch:
+    inputs:
+      run-workflow:
+        description: "Run lock code?"
+        required: true
+        default: "Yes"
+        type: choice
+        options:
+          - "Yes"
+          - "No"
+
+permissions:
+  contents: write
+  pull-requests: write
+  repository-projects: write  
+  
+
+jobs:
+  create-rc:
+    runs-on: ubuntu-latest
+      
+    steps:
+      - name: Checkout repos
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+      
+      - name: increment current version variable
+        id: increment_current_version_variable
+        env:
+          GH_TOKEN: ${{ secrets.TEST_VAR_WRITE_TOKEN }}
+        run: |
+          v=${{ vars.current_version }}
+          base=${v%.*}
+          patch=${v##*.}
+          next="$base.$((patch+1))"
+          echo "next version: $next"
+          gh variable set CURRENT_VERSION --body "$next"      
+          echo "current_version_updated=$next" >> $GITHUB_OUTPUT
+
+      - name: generate branch name
+        id: generate_branch_name
+        env:
+          GH_TOKEN: ${{ secrets.TEST_VAR_WRITE_TOKEN }}
+        run: |
+          CURRENT_RC_BRANCH="${{ vars.CURRENT_RC_BRANCH }}"
+          date=$(date +'%Y/%m/%d')
+          version="${{ steps.increment_current_version_variable.outputs.current_version_updated }}"
+          #branch="rc/$date-$version"
+          branch="rc/${date}-${version}-pp"
+          echo "branch will be $branch and previous is $CURRENT_RC_BRANCH"          
+          echo "current_rc_branch_updated=$branch" >> $GITHUB_OUTPUT
+          echo "previous_rc_branch_updated=$CURRENT_RC_BRANCH" >> $GITHUB_OUTPUT
+          gh variable set PREVIOUS_RC_BRANCH --body "${{ vars.CURRENT_RC_BRANCH }}"
+          gh variable set CURRENT_RC_BRANCH --body "$branch"
+            
+      - name: Create RC branch
+        run: |
+          git checkout main
+          git pull origin main
+          git checkout -b "${{ steps.generate_branch_name.outputs.current_rc_branch_updated }}"
+          git push origin "${{ steps.generate_branch_name.outputs.current_rc_branch_updated }}"
+
+      - name: Update .mergify.yml workflow in master
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
+        run: |
+          PREVIOUS_RC_BRANCH="${{ steps.generate_branch_name.outputs.previous_rc_branch_updated }}"
+          CURRENT_RC_BRANCH="${{ steps.generate_branch_name.outputs.current_rc_branch_updated }}"
+          PATCH_BRANCH="UpdateMergifyWorkflowMaster-$(date +%Y%m%d-%H%M%S)"
+          
+          git fetch origin main
+          git checkout main
+
+          echo "Checking out new branch: $PATCH_BRANCH"          
+          git checkout -b $PATCH_BRANCH
+
+          FILE="MerchantPortal/.mergify.yml"
+
+          if [ -f "$FILE" ]; then
+            echo "Updating $FILE"
+
+            # This update the 'branches' key and for backport
+            yq -i '(.pull_request_rules[] | select(.name == "backport to rc")).actions.backport.branches[0] = "'"$CURRENT_RC_BRANCH"'"' $FILE
+            yq -i '(.pull_request_rules[] | select(.name == "backport to penultimate rc")).actions.backport.branches[0] = "'"$PREVIOUS_RC_BRANCH"'"' $FILE
+
+            git add $FILE
+            git commit -m "Update .mergify.yml file for backport with rc branch"
+            git push origin $PATCH_BRANCH
+          else
+            echo "$FILE not found"
+          fi
+          
+          # 4. Create the Pull Request using GitHub CLI
+          gh pr create \
+          --title "Update .mergify.yml" \
+          --body "This PR was created using the gh cli in a GitHub Action." \
+          --base main \
+          --head $PATCH_BRANCH
+          
+      - name: Update code owners to require QA approval for backport PRs
+        env:
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |          
+          CURRENT_RC_BRANCH="${{ steps.generate_branch_name.outputs.current_rc_branch_updated }}"
+          PATCH_BRANCH="UpdateCodeownersCurrentRC-$(date +%Y%m%d-%H%M%S)"
+          
+          git fetch origin $CURRENT_RC_BRANCH
+          git checkout $CURRENT_RC_BRANCH
+
+          echo "Checking out current RC branch: $CURRENT_RC_BRANCH"          
+          git checkout -b $PATCH_BRANCH
+        
+          FILE_CODEOWN="MerchantPortal/.github/CODEOWNERS"
+          echo "* @ckps/qa" > $FILE_CODEOWN
+
+          git add $FILE_CODEOWN
+          git commit -m "Update codeowners for current RC"
+          git push origin $PATCH_BRANCH
+          
+          # 4. Create the Pull Request using GitHub CLI
+          gh pr create \
+          --title "Update CODEOWNERS" \
+          --body "This PR was created using the gh cli in a GitHub Action." \
+          --base $CURRENT_RC_BRANCH \
+          --head $PATCH_BRANCH
+
+      - name: Create tag
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          CURRENT_RC_BRANCH="${{ steps.generate_branch_name.outputs.current_rc_branch_updated }}"
+          
+          git fetch origin $CURRENT_RC_BRANCH
+          git checkout $CURRENT_RC_BRANCH
+          
+          # 1. Create the tag locally
+          tag_val="${{ steps.increment_current_version_variable.outputs.current_version_updated }}.0"
+          git tag -a "$tag_val" -m "Automated release candidate tag: $tag_val"
+          
+          # 3. Push the tag to the remote
+          git push origin "$tag_val"
+
+      - name: Create empty commit
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PREVIOUS_RC_BRANCH="${{ steps.generate_branch_name.outputs.previous_rc_branch_updated }}"
+          PATCH_BRANCH="EmptyCommitSecondLastRC-$(date +%Y%m%d-%H%M%S)"
+          
+          echo "Checking out second last rc branch: $PREVIOUS_RC_BRANCH"          
+          git fetch origin $PREVIOUS_RC_BRANCH
+          git checkout $PREVIOUS_RC_BRANCH
+
+          echo "Checking out patch branch: $PATCH_BRANCH"          
+          git checkout -b $PATCH_BRANCH
+
+          # 1. create empty commit
+          git commit --allow-empty -m "Empty test commit"
+          
+          # 3. Push the commit
+          git push origin $PATCH_BRANCH
+
+          # 4. Create the Pull Request using GitHub CLI
+          gh pr create \
+          --title "Empty commit" \
+          --body "This PR was created using the gh cli in a GitHub Action." \
+          --base $PREVIOUS_RC_BRANCH \
+          --head $PATCH_BRANCH
