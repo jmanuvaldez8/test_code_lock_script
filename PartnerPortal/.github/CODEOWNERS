@@ -1,0 +1,10 @@
+*.sln @ckps/devops
+*.*proj @ckps/devops
+
+*.bat @ckps/secops
+*.template @ckps/secops
+*.yml @ckps/secops
+*.yaml @ckps/secops
+*.ruleset @ckps/secops
+*.ruleset @ckps/secops
+package-lock.json @ckps/secops

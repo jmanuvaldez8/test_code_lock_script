@@ -1,0 +1,231 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 1111
+
+Description: "test"
+
+Parameters:
+  AppName:
+    Description: aaaa
+    Type: String
+    Default: ppfe
+  Environment:
+    Description: xxxx
+    Type: String
+    AllowedValues:
+      - dev
+      - prd
+    Default: dev
+  ApproverEmail:
+    Type: String
+    Description: vvvv
+
+Resources:
+#
+# ----------------------------------------------------------------------------------------------------------#
+# ---------- Topic to notify Manual steps ----------------------------------------------#
+# ----------------------------------------------------------------------------------------------------------#
+#
+  ProdApproversSNSTopic:
+    Type: eeeeeeeeeeeeee
+    Properties:
+      DisplayName: xxxxxxxxxxxxxxx
+      Subscription:
+        - Endpoint: qqqqqqqqqqqqq
+          Protocol: email
+      TopicName: wwwwwwwwwwwwwwwww
+#
+# ----------------------------------------------------------------------------------------------------------#
+# ---------- Artifacts Bucket ----------------------------------------------#
+# ----------------------------------------------------------------------------------------------------------#
+#
+  S3BucketArtifacts:
+    Properties:
+      BucketName: hhhhhhhhhhhhhhhh
+      VersioningConfiguration:
+        Status: "xxxxxxxx"
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+    Type: jjjjjjjjjjjjjj
+#
+# ----------------------------------------------------------------------------------------------------------#
+# ---------- Codebuild triggered by github event ----------------------------------------------#
+# ----------------------------------------------------------------------------------------------------------#
+#
+  CodeBuildSourceCredential:
+    Type: jjjjjjjjjjjjjjjj
+    Properties:
+      AuthType: Pxxxxxxxxxxxxxxxxxxx
+      ServerType: GITHUB
+      Token: ggggggggggggggggg
+
+  CodeBuildPPFESource:
+    Type: sdffffffffff
+    Properties:
+      Name: sfddddddddd
+      Description: gjhjhjhjhjhjhjhjhjhjhjhjh
+      # ServiceRole: "{{resolve:ssm:/mgmt/iam/codebuildrole/arn:1}}"
+      ServiceRole: bmnmnmnmnmnmnmnmnmnmn
+      # EncryptionKey: !Sub "{{resolve:ssm:/mgmt/${AWS::Region}/kms/artifactsbucketkey/arn:1}}"
+      Source:
+        Type: bnfghfgh
+        Location: fghgfhfgh
+        GitCloneDepth: 1
+        BuildSpec: qqqqqqqqqq
+        Auth:
+          Resource: !hhhhhhhhhhhhhhhh
+          Type: OAUTH
+      Triggers:
+        Webhook: true
+        FilterGroups:
+          - - Type: ddd
+              Pattern: PUSH
+            - Type: HEAD_REF
+              Pattern: !Ref dddsd
+      Environment:
+        Type: LINUX_CONTAINER
+          # Image: aws/codebuild/standard:2.0
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: cccccccc
+        EnvironmentVariables:
+          - Name: jjjjjjjjjjjjjj
+            Type: PLAINTEXTc
+            Value: cccccccccccc
+          - Name: DOT_GIT_S3URL
+            Value: bhhhhhhhhhh
+            Type: PLAINTEXT
+      Artifacts:
+        Type: NO_ARTIFACTS
+      LogsConfig:
+        CloudWatchLogs:
+          Status: ENABLED
+            # GroupName: !Sub ${CodeBuildCIBFFProjectName}-CloudWatchLogs-BuildLogGroup-Name
+      TimeoutInMinutes: 15
+
+  TriggerPipelineOnSuccessSource:
+    Type: bbbbbbbbbbbbbb
+    Properties:
+      Description: match to success codebuild project
+      EventPattern:
+        source:
+          - "aws.codebuild"
+        detail-type:
+          - "CodeBuild Build State Change"
+        detail:
+          build-status:
+            - "SUCCEEDED"
+          project-name:
+            - !Ref CodeBuildPPFESource
+      # RoleArn: !GetAtt EventsRole.Arn
+      State: ENABLED
+      Targets:
+        - Arn: fffffffffffffffffff
+          Id: hhhhhhhhhhhhhhhhhhh
+          RoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/ck-ppfe-compute-pipeline-start-r
+
+#
+# ----------------------------------------------------------------------------------------------------------#
+# ---------- Staging pipeline  ----------------------------------------------#
+# ----------------------------------------------------------------------------------------------------------#
+#
+  PPFEComputeStaging:
+    Type: "cccc"
+    Properties:
+      Name: jjjjjjjjjjjjj
+      ArtifactStore:
+        Location: jjjjjjjjjjjjjj
+        Type: "S3"
+      RoleArn: !fghhgfhfghgfh
+      Stages:
+        -
+          Name: Source
+          Actions:
+            -
+              Name: Source
+              ActionTypeId:
+                Category: Source
+                Owner: ThirdParty
+                Version: "1"
+                Provider: GitHub
+              Configuration:
+                Owner: !Ref GitHubAccountName
+                Repo: !Ref GitHubRepoName
+                Branch: 'rc/2026/03/18-2.86-pp'
+                PollForSourceChanges: false
+                OAuthToken: fffffffffffff
+              OutputArtifacts:
+                - Name: source
+              RunOrder: 1
+        -
+          Name: Build
+          Actions:
+            -
+              Name: Build
+              ActionTypeId:
+                Category: Build
+                Version: "1"
+                Provider: CodeBuild
+                Owner: AWS
+              Configuration:
+                ProjectName: !uuuuuuuuuuuuuu
+                EnvironmentVariables: jjjjjjjjjjjjjjjjjjjjj
+              RunOrder: 1
+              InputArtifacts:
+                - Name: source
+              OutputArtifacts:
+                - Name: build
+              Namespace: buildApp
+        -
+          Name: DeployStaging
+          Actions:
+            -
+              Name: StagingDeploy
+              ActionTypeId:
+                Category: Build
+                Version: "1"
+                Provider: CodeBuild
+                Owner: AWS
+              Configuration:
+                ProjectName: uuuuuuuuuuuuuuuuu
+                EnvironmentVariables: mmmmmmmmmmmmmmmmmmmmm
+                PrimarySource: source
+              RunOrder: 1
+              InputArtifacts:
+                - Name: source
+                - Name: build
+              Namespace: deploystaging
+        -
+          Name: ManualApproval
+          Actions:
+            -
+              Name: "ManualApproval"
+              ActionTypeId:
+                Category: "Approval"
+                Owner: "AWS"
+                Version: "1"
+                Provider: "Manual"
+              Configuration:
+                NotificationArn: pppppppppppppppppppppppppppp
+                CustomData: llllllllllllllllllll
+                ExternalEntityLink: uuuuuuuuuuuuuuuu
+              InputArtifacts: []
+              OutputArtifacts: []
+              RunOrder: 1
+        - Name: PromoteBuildToLive
+          Actions:
+            - Name: PromoteBuildToLive
+              ActionTypeId:
+                Category: Invoke
+                Version: "1"
+                Provider: Lambda
+                Owner: AWS
+              Configuration:
+                FunctionName: yyyyyyyyyyyyyyyyy
+                UserParameters: bbbbbbbbbbbbbbbbbbbbb
+              RunOrder: 2
+              InputArtifacts:
+                - Name: build
+                - Name: source
