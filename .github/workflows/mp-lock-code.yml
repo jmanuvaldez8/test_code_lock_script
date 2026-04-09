@@ -60,19 +60,10 @@ jobs:
             
       - name: Create RC branch
         run: |
-          git checkout master
-          git pull origin master
+          git checkout main
+          git pull origin main
           git checkout -b "${{ steps.branch.outputs.branch_name }}"
           git push origin "${{ steps.branch.outputs.branch_name }}"
-
-      - name: Update repository variable
-        env:
-          GH_TOKEN: ${{ secrets.TEST_VAR_WRITE_TOKEN }}
-        run: |
-          PREV_RC=$(gh variable get CURRENT_RC_BRANCH --repo "$GITHUB_REPOSITORY" --json value -q .value)
-          #gh variable set PREVIOUS_RC_BRANCH --body "$PREV_RC"
-          #gh variable set CURRENT_RC_BRANCH --body "${{ steps.branch.outputs.branch_name }}"
-          #gh variable set CURRENT_VERSION --body "$VERSION"
 
 
       # - name: Update publish workflow in previous RC branch
