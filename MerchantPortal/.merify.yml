@@ -1,0 +1,169 @@
+queue_rules:
+  - name: default
+    batch_size: 1
+    queue_conditions:
+      - "#approved-reviews-by>=1"
+    merge_conditions:
+      - "#approved-reviews-by>=1"
+    merge_method: squash
+
+pull_request_rules:
+  - name: remove all 'required' labels
+    conditions:
+      - "#approved-reviews-by=0"
+      - -closed
+    actions:
+      label:
+        remove:
+          - bi required
+
+  - name: add label if approved but seniordevs is still required
+    conditions:
+      - "#approved-reviews-by>=1"
+      - review-requested=@seniordevs
+      - -closed
+    actions:
+      label:
+        add:
+          - seniordevs required
+  - name: remove label if seniordevs is not required
+    conditions:
+      - review-requested!=@seniordevs
+      - -closed
+    actions:
+      label:
+        remove:
+          - seniordevs required
+  - name: add label if approved but corecodereview is still required
+    conditions:
+      - "#approved-reviews-by>=1"
+      - review-requested=@corecodereview
+      - -closed
+    actions:
+      label:
+        add:
+          - corecodereview required
+  - name: remove label if corecodereview is not required
+    conditions:
+      - review-requested!=@corecodereview
+      - -closed
+    actions:
+      label:
+        remove:
+          - corecodereview required
+  - name: add label if approved but gatewayengines is still required
+    conditions:
+      - "#approved-reviews-by>=1"
+      - review-requested=@gatewayengines
+      - -closed
+    actions:
+      label:
+        add:
+          - gatewayengines required
+  - name: remove label if gatewayengines is not required
+    conditions:
+      - review-requested!=@gatewayengines
+      - -closed
+    actions:
+      label:
+        remove:
+          - gatewayengines required
+  - name: add label if approved but devops is still required
+    conditions:
+      - "#approved-reviews-by>=1"
+      - review-requested=@devops
+      - -closed
+    actions:
+      label:
+        add:
+          - devops required
+  - name: remove label if devops is not required
+    conditions:
+      - review-requested!=@devops
+      - -closed
+    actions:
+      label:
+        remove:
+          - devops required
+  - name: add label if approved but secops is still required
+    conditions:
+      - "#approved-reviews-by>=1"
+      - review-requested=@secops
+      - -closed
+    actions:
+      label:
+        add:
+          - secops required
+  - name: remove label if secops is not required
+    conditions:
+      - review-requested!=@secops
+      - -closed
+    actions:
+      label:
+        remove:
+          - secops required
+  - name: add label if approved but bi is still required
+    conditions:
+      - "#approved-reviews-by>=1"
+      - review-requested=@bi
+      - -closed
+    actions:
+      label:
+        add:
+          - bi required
+  - name: remove label if bi is not required
+    conditions:
+      - review-requested!=@bi
+      - -closed
+    actions:
+      label:
+        remove:
+          - bi required
+  - name: add label on conflict
+    conditions:
+      - conflict
+      - -closed
+    actions:
+      label:
+        add:
+          - conflicts
+      comment:
+        message: Please fix the conflicts @{{author}}
+  - name: remove label on conflict
+    conditions:
+      - -conflict
+      - -closed
+    actions:
+      label:
+        remove:
+          - conflicts
+  - name: backport to rc
+    conditions:
+      - base=master
+      - label=backport to last rc
+    actions:
+      backport:
+        branches:
+          - rc/2026/03/18-2.86-mp
+        labels:
+          - backported
+        label_conflicts: backport conflict
+        assignees:
+          - "{{author}}"
+  - name: backport to penultimate rc
+    conditions:
+      - base=master
+      - label=backport to second-last rc
+    actions:
+      backport:
+        branches:
+          - rc/2026/02/18-2.85-mp
+        labels:
+          - backported
+        label_conflicts: backport conflict
+        assignees:
+          - "{{author}}"
+  - name: message on build check failure
+    conditions:
+      - check-failure=build
+      - -closed
