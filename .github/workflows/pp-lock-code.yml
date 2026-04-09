@@ -1,4 +1,4 @@
-name: Merchant Portal lock code
+name: Partner Portal lock code
 
 on:
   workflow_dispatch:
