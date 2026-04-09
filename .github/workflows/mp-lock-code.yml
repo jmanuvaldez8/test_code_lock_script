@@ -133,6 +133,21 @@ jobs:
           --base $CURRENT_RC_BRANCH \
           --head $PATCH_BRANCH
 
+      - name: Create tag
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          CURRENT_RC_BRANCH="${{ steps.generate_branch_name.outputs.current_rc_branch_updated }}"
+          
+          git fetch origin $CURRENT_RC_BRANCH
+          git checkout $CURRENT_RC_BRANCH
+          
+          # 1. Create the tag locally
+          tag_val="${{ steps.increment_current_version_variable.outputs.current_version_updated }}.0"
+          git tag -a "$tag_val" -m "Automated release candidate tag: $tag_val"
+          
+          # 3. Push the tag to the remote
+          git push origin "$tag_val"
 
 
         
