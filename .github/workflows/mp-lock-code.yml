@@ -34,6 +34,7 @@ jobs:
           git config user.email "github-actions@github.com"
       
       - name: increment current version variable
+        id: increment_current_version_variable
         env:
           GH_TOKEN: ${{ secrets.TEST_VAR_WRITE_TOKEN }}
         run: |
@@ -43,15 +44,15 @@ jobs:
           next="$base.$((patch+1))"
           echo "next version: $next"
           gh variable set CURRENT_VERSION --body "$next"      
-          echo "version updated: ${{ vars.current_version }}"
+          echo "current_version_updated=$next" >> "$GITHUB_OUTPUT"
 
       - name: generate branch name
         env:
           GH_TOKEN: ${{ secrets.TEST_VAR_WRITE_TOKEN }}
         run: |
           CURRENT_RC_BRANCH="${{ vars.CURRENT_RC_BRANCH }}"
-          date=$(date +'%y/%m/%d')
-          version="${{ vars.current_version }}"
+          date=$(date +'%yyyy/%m/%d')
+          version="${{ steps.increment_current_version_variable.current_version_updated }}"
           branch="rc/$date-$version"          
           echo "branch will be $branch"
           gh variable set PREVIOUS_RC_BRANCH --body "${{ vars.CURRENT_RC_BRANCH }}"
