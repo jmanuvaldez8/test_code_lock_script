@@ -56,9 +56,11 @@ jobs:
           version="${{ steps.increment_current_version_variable.outputs.current_version_updated }}"
           #branch="rc/$date-$version"
           branch="rc/${date}-${version}-pp"
+          
           echo "branch will be $branch and previous is $CURRENT_RC_BRANCH"          
           echo "current_rc_branch_updated=$branch" >> $GITHUB_OUTPUT
           echo "previous_rc_branch_updated=$CURRENT_RC_BRANCH" >> $GITHUB_OUTPUT
+          
           gh variable set PREVIOUS_RC_BRANCH --body "${{ vars.CURRENT_RC_BRANCH }}"
           gh variable set CURRENT_RC_BRANCH --body "$branch"
             
@@ -69,6 +71,55 @@ jobs:
           git checkout -b "${{ steps.generate_branch_name.outputs.current_rc_branch_updated }}"
           git push origin "${{ steps.generate_branch_name.outputs.current_rc_branch_updated }}"
 
+      - name: Update code owners to require QA approval for backport PRs
+        env:
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |          
+          CURRENT_RC_BRANCH="${{ steps.generate_branch_name.outputs.current_rc_branch_updated }}"
+          PATCH_BRANCH="UpdateCodeownersCurrentRC-$(date +%Y%m%d-%H%M%S)"
+          
+          git fetch origin $CURRENT_RC_BRANCH
+          git checkout $CURRENT_RC_BRANCH
+
+          echo "Checking out current RC branch: $CURRENT_RC_BRANCH"          
+          git checkout -b $PATCH_BRANCH
+        
+          FILE_CODEOWN="PartnerPortal/.github/CODEOWNERS"
+          echo "* @ckps/qa" > $FILE_CODEOWN
+
+          git add $FILE_CODEOWN
+          git commit -m "Update codeowners for current RC"
+          git push origin $PATCH_BRANCH
+
+          #Update front end to be published from new rc branch
+          FILE="PartnerPortal/common_templates/compute-pipeline.yaml"
+
+          if [ -f "$FILE" ]; then
+            echo "Updating $FILE"
+
+            # This update the 'branches' key and for backport
+            yq -i '(.resources.PPFEComputeStaging.Properties.Stages[] | select(.Name == "Source")).actions.Configuration.branches[0] = "'"$CURRENT_RC_BRANCH"'"' $FILE
+            #yq -i '(.pull_request_rules[] | select(.name == "backport to penultimate rc")).actions.backport.branches[0] = "'"$PREVIOUS_RC_BRANCH"'"' $FILE
+
+            git add $FILE
+            git commit -m "Update compute-pipeline.yaml file for backport with rc branch"
+            git push origin $PATCH_BRANCH
+          else
+            echo "$FILE not found"
+          fi
+          
+          # 4. Create the Pull Request using GitHub CLI
+          gh pr create \
+          --title "Update CODEOWNERS and compute-pipeline.yaml for backport with RC branch" \
+          --body "This PR was created using the gh cli in a GitHub Action." \
+          --base $CURRENT_RC_BRANCH \
+          --head $PATCH_BRANCH
+
+
+
+
+          
+      
       - name: Update .mergify.yml workflow in master
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
@@ -106,72 +157,3 @@ jobs:
           --base main \
           --head $PATCH_BRANCH
           
-      - name: Update code owners to require QA approval for backport PRs
-        env:
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |          
-          CURRENT_RC_BRANCH="${{ steps.generate_branch_name.outputs.current_rc_branch_updated }}"
-          PATCH_BRANCH="UpdateCodeownersCurrentRC-$(date +%Y%m%d-%H%M%S)"
-          
-          git fetch origin $CURRENT_RC_BRANCH
-          git checkout $CURRENT_RC_BRANCH
-
-          echo "Checking out current RC branch: $CURRENT_RC_BRANCH"          
-          git checkout -b $PATCH_BRANCH
-        
-          FILE_CODEOWN="MerchantPortal/.github/CODEOWNERS"
-          echo "* @ckps/qa" > $FILE_CODEOWN
-
-          git add $FILE_CODEOWN
-          git commit -m "Update codeowners for current RC"
-          git push origin $PATCH_BRANCH
-          
-          # 4. Create the Pull Request using GitHub CLI
-          gh pr create \
-          --title "Update CODEOWNERS" \
-          --body "This PR was created using the gh cli in a GitHub Action." \
-          --base $CURRENT_RC_BRANCH \
-          --head $PATCH_BRANCH
-
-      - name: Create tag
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          CURRENT_RC_BRANCH="${{ steps.generate_branch_name.outputs.current_rc_branch_updated }}"
-          
-          git fetch origin $CURRENT_RC_BRANCH
-          git checkout $CURRENT_RC_BRANCH
-          
-          # 1. Create the tag locally
-          tag_val="${{ steps.increment_current_version_variable.outputs.current_version_updated }}.0"
-          git tag -a "$tag_val" -m "Automated release candidate tag: $tag_val"
-          
-          # 3. Push the tag to the remote
-          git push origin "$tag_val"
-
-      - name: Create empty commit
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          PREVIOUS_RC_BRANCH="${{ steps.generate_branch_name.outputs.previous_rc_branch_updated }}"
-          PATCH_BRANCH="EmptyCommitSecondLastRC-$(date +%Y%m%d-%H%M%S)"
-          
-          echo "Checking out second last rc branch: $PREVIOUS_RC_BRANCH"          
-          git fetch origin $PREVIOUS_RC_BRANCH
-          git checkout $PREVIOUS_RC_BRANCH
-
-          echo "Checking out patch branch: $PATCH_BRANCH"          
-          git checkout -b $PATCH_BRANCH
-
-          # 1. create empty commit
-          git commit --allow-empty -m "Empty test commit"
-          
-          # 3. Push the commit
-          git push origin $PATCH_BRANCH
-
-          # 4. Create the Pull Request using GitHub CLI
-          gh pr create \
-          --title "Empty commit" \
-          --body "This PR was created using the gh cli in a GitHub Action." \
-          --base $PREVIOUS_RC_BRANCH \
-          --head $PATCH_BRANCH
