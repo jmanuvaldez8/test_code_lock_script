@@ -42,13 +42,12 @@ jobs:
           patch=${v##*.}
           next="$base.$((patch+1))"
           echo "next version: $next"
-          #gh variable set current_version --repo "$github_repository" --body "$next"
-          gh variable set CURRENT_VERSION --body "$next"          
+          gh variable set CURRENT_VERSION --body "$next"      
+          echo "version updated: ${{ vars.current_version }}"
 
       - name: generate branch name
         env:
           GH_TOKEN: ${{ secrets.TEST_VAR_WRITE_TOKEN }}
-        id: branch
         run: |
           CURRENT_RC_BRANCH="${{ vars.CURRENT_RC_BRANCH }}"
           date=$(date +'%y/%m/%d')
