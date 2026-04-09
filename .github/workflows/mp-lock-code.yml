@@ -58,6 +58,7 @@ jobs:
           branch="rc/${date}-${version}-mp"
           echo "branch will be $branch"
           echo "current_rc_branch_updated=$branch" >> $GITHUB_OUTPUT
+          echo "previous_rc_branch_updated=$CURRENT_RC_BRANCH" >> $GITHUB_OUTPUT
           gh variable set PREVIOUS_RC_BRANCH --body "${{ vars.CURRENT_RC_BRANCH }}"
           gh variable set CURRENT_RC_BRANCH --body "$branch"
             
@@ -72,7 +73,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
         run: |
-          PREVIOUS_RC_BRANCH="${{ vars.PREVIOUS_RC_BRANCH }}"
+          PREVIOUS_RC_BRANCH="${{ steps.generate_branch_name.outputs.previous_rc_branch_updated }}"
           CURRENT_RC_BRANCH="${{ steps.generate_branch_name.outputs.current_rc_branch_updated }}"
           PATCH_BRANCH="UpdateMergifyWorkflowMaster-$(date +%Y%m%d-%H%M%S)"
           
