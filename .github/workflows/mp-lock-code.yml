@@ -149,6 +149,29 @@ jobs:
           # 3. Push the tag to the remote
           git push origin "$tag_val"
 
-
-        
+      - name: Create empty commit
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PREVIOUS_RC_BRANCH="${{ steps.generate_branch_name.outputs.previous_rc_branch_updated }}"
+          PATCH_BRANCH="EmptyCommitSecondLastRC-$(date +%Y%m%d-%H%M%S)"
           
+          echo "Checking out second last rc branch: $PREVIOUS_RC_BRANCH"          
+          git fetch origin $PREVIOUS_RC_BRANCH
+          git checkout $PREVIOUS_RC_BRANCH
+
+          echo "Checking out patch branch: $PATCH_BRANCH"          
+          git checkout -b $PATCH_BRANCH
+
+          # 1. create empty commit
+          git commit --allow-empty -m "Empty test commit"
+          
+          # 3. Push the commit
+          git push origin $PATCH_BRANCH
+
+          # 4. Create the Pull Request using GitHub CLI
+          gh pr create \
+          --title "Empty commit" \
+          --body "This PR was created using the gh cli in a GitHub Action." \
+          --base $PREVIOUS_RC_BRANCH \
+          --head $PATCH_BRANCH
