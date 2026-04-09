@@ -110,29 +110,16 @@ jobs:
         env:
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |          
-          CURRENT_RC_BRANCH="${{ vars.CURRENT_RC_BRANCH }}"
-          PATCH_BRANCH="UpdatePublishWorkflowCurrentRC-$(date +%Y%m%d-%H%M%S)"
+          CURRENT_RC_BRANCH="${{ steps.generate_branch_name.outputs.current_rc_branch_updated }}"
+          PATCH_BRANCH="UpdateCodeownersCurrentRC-$(date +%Y%m%d-%H%M%S)"
           
           git fetch origin $CURRENT_RC_BRANCH
           git checkout $CURRENT_RC_BRANCH
 
           echo "Checking out current RC branch: $CURRENT_RC_BRANCH"          
           git checkout -b $PATCH_BRANCH
-          
-          FILE="lock_code_test_folder/xVersion.vb"
-          sed -i 's/\(Public Const ReleaseChannel.*=\).*/\1 "beta"/' $FILE          
-          
-          git add $FILE
-          git commit -m "Set ReleaseChannel to beta for current RC branch"
-          git push origin $PATCH_BRANCH
-
-          #Update Codeowners
-          echo "updating codeowners on $PATCH_BRANCH"
-
-          git fetch origin $PATCH_BRANCH
-          git checkout $PATCH_BRANCH
-
-          FILE_CODEOWN="lock_code_test_folder/CODEOWNERS"
+        
+          FILE_CODEOWN="MerchantPortal/.github/CODEOWNERS"
           echo "* @ckps/qa" > $FILE_CODEOWN
 
           git add $FILE_CODEOWN
@@ -141,76 +128,11 @@ jobs:
           
           # 4. Create the Pull Request using GitHub CLI
           gh pr create \
-          --title "Automated YAML Update" \
+          --title "Update CODEOWNERS" \
           --body "This PR was created using the gh cli in a GitHub Action." \
           --base $CURRENT_RC_BRANCH \
           --head $PATCH_BRANCH
-          
 
-      # - name: Update publish workflow in previous RC branch
-        # #uses: mikefarah/yq@v4.44.3
-        # env:
-          # GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
-        # run: |
-          # PREV_RC_BRANCH="${{ vars.PREVIOUS_RC_BRANCH }}"
-          # PATCH_BRANCH="UpdatePublishWorkflowPreviousRC-$(date +%Y%m%d-%H%M%S)"
-
-          # git fetch origin $PREV_RC_BRANCH
-          # git checkout $PREV_RC_BRANCH
-
-          # echo "Checking out previous RC branch: $PREV_RC_BRANCH"          
-          # git checkout -b $PATCH_BRANCH
-
-          # FILE="lock_code_test_folder/publish-pgw.yml"
-
-          # if [ -f "$FILE" ]; then
-            # echo "Updating $FILE"
-
-            # # This deletes the 'branches' key and everything under it
-            # yq -i 'del(.on.push)' $FILE
-
-            # git add $FILE
-            # git commit -m "Disable publish triggers on previous RC branch" || echo "No changes"
-            # git push origin $PATCH_BRANCH
-          # else
-            # echo "$FILE not found"
-          # fi
-
-          # FILE_PRTL="lock_code_test_folder/publish-prtl.yml"
-
-          # if [ -f "$FILE_PRTL" ]; then
-            # echo "Updating $FILE_PRTL"
-
-            # # This deletes the 'branches' key and everything under it
-            # yq -i 'del(.on.push)' $FILE_PRTL
-
-            # git add $FILE_PRTL
-            # git commit -m "Disable publish triggers on previous RC branch" || echo "No changes"
-            # git push origin $PATCH_BRANCH            
-          # else
-            # echo "$FILE_PRTL not found"
-          # fi
-          
-          # #Set ReleaseChannel to stable in previous RC branch
-          # #echo "inputs.pe-stable ${{inputs.pe-stable}} * ${{inputs.pe-stable}}=='Yes'"
-          # if ${{inputs.pe-stable}}=='Yes'; then
-            # FILE_VERSION="lock_code_test_folder/xVersion.vb"
-            # sed -i 's/\(Public Const ReleaseChannel.*=\).*/\1 "stable"/' $FILE_VERSION
-            # #sed -i 's/\(Public Const zzzzz1 As String = \)".*"/\1"beta"/' version.vb
-            
-            # git add $FILE_VERSION
-            # git commit -m "Set ReleaseChannel to stable for previous RC branch"
-            # git push origin $PATCH_BRANCH
-          # else
-            # echo "NO ReleaseChannel to stable in previous RC branch"
-          # fi
-          
-          # # 4. Create the Pull Request using GitHub CLI
-          # gh pr create \
-          # --title "Automated YAML Update" \
-          # --body "This PR was created using the gh cli in a GitHub Action." \
-          # --base $PREV_RC_BRANCH \
-          # --head $PATCH_BRANCH
 
 
         
