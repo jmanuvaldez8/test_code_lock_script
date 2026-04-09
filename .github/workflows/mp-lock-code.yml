@@ -43,19 +43,21 @@ jobs:
           next="$base.$((patch+1))"
           echo "next version: $next"
           #gh variable set current_version --repo "$github_repository" --body "$next"
-          gh variable set CURRENT_VERSION --body "$next"
-          echo "next_version=$next" >> "$github_output"
+          gh variable set CURRENT_VERSION --body "$next"          
 
       - name: generate branch name
+        env:
+          GH_TOKEN: ${{ secrets.TEST_VAR_WRITE_TOKEN }}
         id: branch
         run: |
+          CURRENT_RC_BRANCH="${{ vars.CURRENT_RC_BRANCH }}"
           date=$(date +'%y/%m/%d')
           version="${{ vars.current_version }}"
-          branch="rc/$date-$version"
-
-          echo "branch_name=$branch" >> "$github_output"
+          branch="rc/$date-$version"          
           echo "branch will be $branch"
-
+          gh variable set PREVIOUS_RC_BRANCH --body "${{ vars.CURRENT_RC_BRANCH }}"
+          gh variable set CURRENT_RC_BRANCH --body "$branch"
+            
       - name: Create RC branch
         run: |
           git checkout master
@@ -68,9 +70,9 @@ jobs:
           GH_TOKEN: ${{ secrets.TEST_VAR_WRITE_TOKEN }}
         run: |
           PREV_RC=$(gh variable get CURRENT_RC_BRANCH --repo "$GITHUB_REPOSITORY" --json value -q .value)
-          gh variable set PREVIOUS_RC_BRANCH --body "$PREV_RC"
-          gh variable set CURRENT_RC_BRANCH --body "${{ steps.branch.outputs.branch_name }}"
-          gh variable set CURRENT_VERSION --body "$VERSION"
+          #gh variable set PREVIOUS_RC_BRANCH --body "$PREV_RC"
+          #gh variable set CURRENT_RC_BRANCH --body "${{ steps.branch.outputs.branch_name }}"
+          #gh variable set CURRENT_VERSION --body "$VERSION"
 
 
       # - name: Update publish workflow in previous RC branch
