@@ -98,7 +98,7 @@ jobs:
             echo "Updating $FILE"
 
             # This update the 'branches' key and for backport
-            yq -i '(.resources.PPFEComputeStaging.Properties.Stages[] | select(.Name == "Source")).actions.Configuration.branches[0] = "'"$CURRENT_RC_BRANCH"'"' $FILE
+            yq -i '(.Resources.PPFEComputeStaging.Properties.Stages[] | select(.Name == "Source")).Actions[0].Configuration.Branch = "'"$CURRENT_RC_BRANCH"'"' $FILE
             #yq -i '(.pull_request_rules[] | select(.name == "backport to penultimate rc")).actions.backport.branches[0] = "'"$PREVIOUS_RC_BRANCH"'"' $FILE
 
             git add $FILE
