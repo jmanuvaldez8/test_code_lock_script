@@ -60,6 +60,14 @@ jobs:
             echo "Updating NuGet packages in $PROJ..."
 
             # List outdated packages (JSON format)
+            OUTDATED=$(dotnet list $PROJ package --outdated)
+            if [[ $OUTDATED == *"version"* ]]; then
+              echo "Updates found!"
+              echo "$OUTDATED"
+              exit 1
+            fi
+
+          
             packages=$(dotnet list "$PROJ" package --outdated --include-transitive --format json | \
                        jq -r '.Outdated[] | .Name')
 
