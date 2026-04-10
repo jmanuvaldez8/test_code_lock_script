@@ -145,6 +145,22 @@ jobs:
           else
             echo "$FILE not found"
           fi
+
+          #Update front end to be published from new rc branch
+          FILE="PartnerPortal/common_templates/compute-pipeline.yaml"
+
+          if [ -f "$FILE" ]; then
+            echo "Updating $FILE"
+
+            # This update the 'branches' key and for backport
+            yq -i '(.Resources.PPFEComputeStaging.Properties.Stages[] | select(.Name == "Source")).Actions[0].Configuration.Branch = "'"$CURRENT_RC_BRANCH"'"' $FILE
+
+            git add $FILE
+            git commit -m "Update compute-pipeline.yaml file for backport with rc branch"
+            git push origin $PATCH_BRANCH
+          else
+            echo "$FILE not found"
+          fi
           
           # 4. Create the Pull Request using GitHub CLI
           gh pr create \
