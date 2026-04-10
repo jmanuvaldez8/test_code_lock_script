@@ -1,0 +1,55 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="AWSSDK.APIGateway" Version="4.0.6" />
+    <PackageVersion Include="AWSSDK.ApiGatewayManagementApi" Version="4.0.1.2" />
+    <PackageVersion Include="AWSSDK.AppConfig" Version="4.0.3.16" />
+    <PackageVersion Include="AWSSDK.Athena" Version="4.0.4.3" />
+    <PackageVersion Include="AWSSDK.AutoScaling" Version="4.0.8.4" />
+    <PackageVersion Include="AWSSDK.CertificateManager" Version="4.0.2.17" />
+    <PackageVersion Include="AWSSDK.CloudFront" Version="4.0.12.3" />
+    <PackageVersion Include="AWSSDK.CloudWatch" Version="4.0.8.2" />
+    <PackageVersion Include="AWSSDK.CloudWatchEvents" Version="4.0.1.16" />
+    <PackageVersion Include="AWSSDK.CloudWatchLogs" Version="4.0.15.2" />
+    <PackageVersion Include="AWSSDK.CodePipeline" Version="4.0.4.17" />
+    <PackageVersion Include="AWSSDK.CognitoIdentityProvider" Version="4.0.6.2" />
+    <PackageVersion Include="AWSSDK.Core" Version="4.0.3.18" />
+    <PackageVersion Include="AWSSDK.DynamoDBv2" Version="4.0.15.2" />
+    <PackageVersion Include="AWSSDK.EC2" Version="4.0.80.2" />
+    <PackageVersion Include="AWSSDK.ElasticLoadBalancing" Version="4.0.2.17" />
+    <PackageVersion Include="AWSSDK.ElasticLoadBalancingV2" Version="4.0.6.12" />
+    <PackageVersion Include="AWSSDK.Extensions.CloudFront.Signers" Version="4.0.0.28" />
+    <PackageVersion Include="AWSSDK.Extensions.NETCore.Setup" Version="4.0.3.11" />
+    <PackageVersion Include="AWSSDK.IdentityManagement" Version="4.0.9.10" />
+    <PackageVersion Include="AWSSDK.Inspector2" Version="4.0.9.3" />
+    <PackageVersion Include="AWSSDK.Iot" Version="4.0.6.8" />
+    <PackageVersion Include="AWSSDK.IotData" Version="4.0.2.18" />
+    <PackageVersion Include="AWSSDK.KeyManagementService" Version="4.0.9.3" />
+    <PackageVersion Include="AWSSDK.KinesisFirehose" Version="4.0.3.16" />
+    <PackageVersion Include="AWSSDK.Lambda" Version="4.0.13.4" />
+    <PackageVersion Include="AWSSDK.PaymentCryptography" Version="4.0.7.8" />
+    <PackageVersion Include="AWSSDK.PaymentCryptographyData" Version="4.0.6.8" />
+    <PackageVersion Include="AWSSDK.RDS" Version="4.0.18.3" />
+    <PackageVersion Include="AWSSDK.RedshiftDataAPIService" Version="4.0.3.12" />
+    <PackageVersion Include="AWSSDK.Route53" Version="4.0.8.12" />
+    <PackageVersion Include="AWSSDK.S3" Version="4.0.19" />
+    <PackageVersion Include="AWSSDK.SecretsManager" Version="4.0.4.9" />
+    <PackageVersion Include="AWSSDK.SecurityToken" Version="4.0.5.12" />
+    <PackageVersion Include="AWSSDK.SimpleEmail" Version="4.0.2.16" />
+    <PackageVersion Include="AWSSDK.SimpleEmailV2" Version="4.0.12.2" />
+    <PackageVersion Include="AWSSDK.SimpleNotificationService" Version="4.0.2.19" />
+    <PackageVersion Include="AWSSDK.SimpleSystemsManagement" Version="4.0.7.3" />
+    <PackageVersion Include="AWSSDK.SQS" Version="4.0.2.17" />
+    <PackageVersion Include="AWSSDK.SSO" Version="4.0.2.16" />
+    <PackageVersion Include="AWSSDK.SSOOIDC" Version="4.0.3.17" />
+    <PackageVersion Include="AWSSDK.StepFunctions" Version="4.0.2.12" />
+    <PackageVersion Include="AWSSDK.TimestreamWrite" Version="4.0.3.18" />
+    <PackageVersion Include="AWSSDK.Transfer" Version="4.0.6.4" />
+    <PackageVersion Include="AWSSDK.WAFV2" Version="4.0.8.2" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <PackageVersion Include="PDFsharp-GDI" Version="6.1.1" />
+  </ItemGroup>
+</Project>
