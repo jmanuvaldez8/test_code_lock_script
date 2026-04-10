@@ -38,6 +38,9 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
+      - name: List files for debugging
+        run: find . -name "*.vbproj"          
+
       - name: Install Update Tool
         run: dotnet tool install --global dotnet-outdated-tool
 
@@ -45,11 +48,11 @@ jobs:
         # -u: Updates the Directory.Packages.props file
         # -vl Major: Allows updating to the latest Major version
         # --inc xAws: Limits scope to packages used by xAws.vbproj
-        run: dotnet outdated -u -vl Major
+        run: dotnet outdated ./ -u -vl Major
 
       - name: Verify Build
         # Ensures the update didn't break the VB project
-        run: dotnet build xAws.vbproj --configuration Release      
+        run: dotnet build ./xAWS.vbproj --configuration Release      
 
         
           
