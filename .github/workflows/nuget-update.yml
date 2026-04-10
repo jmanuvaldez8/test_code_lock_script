@@ -38,6 +38,9 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
+      - name: List files for debugging
+        run: find . -name "*.vbproj"          
+
       - name: Install Update Tool
         run: dotnet tool install --global dotnet-outdated-tool
 
