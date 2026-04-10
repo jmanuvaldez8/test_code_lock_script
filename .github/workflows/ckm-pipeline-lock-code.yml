@@ -1,4 +1,4 @@
-name: CKM lock code Pipeline
+name: Ckm update pipeline
 
 on:
   workflow_dispatch:
