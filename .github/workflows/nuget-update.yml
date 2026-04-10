@@ -86,9 +86,9 @@ jobs:
             echo "Updating $name to $latest"
             
             # Escape the name for sed to be safe
-            sed -i "s/\(<PackageVersion [^>]*Include=\"$name\" [^>]*Version=\"\)[^\"]*\(\"\)/\1$latest\2/g" "$PROPS"
-
-            git add $PROPS
-            git commit -m "Update Nuget packages"
-            git push origin $PATCH_BRANCH   
+            sed -i "s/\(<PackageVersion [^>]*Include=\"$name\" [^>]*Version=\"\)[^\"]*\(\"\)/\1$latest\2/g" "$PROPS"  
           done
+
+          git add $PROPS
+          git commit -m "Update Nuget packages"
+          git push origin $PATCH_BRANCH 
