@@ -21,11 +21,6 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ymwLibrary\ymwLibrary.vbproj" />
-    <Import Include="ymw" />
-    <Import Include="ymw.ymwUtilities" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="AWSSDK.Extensions.CloudFront.Signers" />
     <PackageReference Include="Amazon.Extensions.S3.Encryption" PrivateAssets="compile" />
     <PackageReference Include="AWSSDK.APIGateway" />
