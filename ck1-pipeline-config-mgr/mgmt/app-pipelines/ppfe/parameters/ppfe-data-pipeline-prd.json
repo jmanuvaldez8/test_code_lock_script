@@ -1,0 +1,13 @@
+{
+    "Parameters": {
+        "Application": "ppfe",
+        "PipelineNameSuffix": "data-pipeline",
+        "Environment": "ppfe-prd",
+        "RepoName": "PartnerPortal",
+        "BranchName": "rc/2026/03/18-2.86-pp", 
+        "PipelineUtilsDir": "pipeline_utils",
+        "CommonTemplatesDir": "common_templates",
+        "PollForSourceChanges": "true",
+        "ApproverEmail": "devops@cardknox.com"
+    }
+}
