@@ -80,10 +80,10 @@ jobs:
           PREVIOUS_RC_BRANCH="${{ steps.generate_branch_name.outputs.previous_rc_branch_updated }}"
           PATCH_BRANCH="UpdatePublishWorkflowPreviousRC-$(date +%Y%m%d-%H%M%S)"
 
-          git fetch origin $PREV_RC_BRANCH
-          git checkout $PREV_RC_BRANCH
+          git fetch origin $PREVIOUS_RC_BRANCH
+          git checkout $PREVIOUS_RC_BRANCH
 
-          echo "Checking out previous RC branch: $PREV_RC_BRANCH"          
+          echo "Checking out previous RC branch: $PREVIOUS_RC_BRANCH"          
           git checkout -b $PATCH_BRANCH
 
           FILE="lock_code_test_folder/publish-pgw.yml"
@@ -134,7 +134,7 @@ jobs:
           gh pr create \
           --title "Automated YAML Update" \
           --body "This PR was created using the gh cli in a GitHub Action." \
-          --base $PREV_RC_BRANCH \
+          --base $PREVIOUS_RC_BRANCH \
           --head $PATCH_BRANCH
 
       - name: Set ReleaseChannel to beta in new RC branch
