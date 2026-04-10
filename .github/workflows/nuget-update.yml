@@ -65,7 +65,11 @@ jobs:
           # 1. Get the list, skip headers, and extract Name and Latest version
           # The awk script looks for lines with 5+ columns (standard for outdated output)
           # and avoids the header lines.
-          updates=$(dotnet list $PROJ package --outdated | awk 'NR > 2 && $NF ~ /[0-9]/ {print $2, $NF}')
+          #updates=$(dotnet list $PROJ package --outdated | awk 'NR > 2 && $NF ~ /[0-9]/ {print $2, $NF}')
+
+          updates=$(dotnet list $PROJ package --outdated | \
+                    grep -ivE "^Updating|http|\[.*\]" | \
+                    awk '$2 != "" && $NF ~ /[0-9]\.[0-9]/ {print $2, $NF}')
 
           if [ -z "$updates" ]; then
             echo "All packages are up to date."
@@ -73,15 +77,27 @@ jobs:
           fi
 
           echo "Found updates. Applying to $PROPS..."
+          echo "$updates" | while read -r name latest; do
+            # Sanity check: Ensure we aren't trying to update a URL as a package
+            if [[ $name == http* ]] || [[ $name == *"/"* ]]; then
+               continue
+            fi
+
+            echo "Updating $name to $latest"
+            
+            # Escape the name for sed to be safe
+            #sed -i "s/\(<PackageVersion [^>]*Include=\"$name\" [^>]*Version=\"\)[^\"]*\(\"\)/\1$latest\2/g" "$PROPS"
+          done
+          
 
           # 2. Iterate through the results
-          echo "$updates" | while read -r name latest; do
-            echo "Updating $name to $latest"
+          #echo "$updates" | while read -r name latest; do
+            #echo "Updating $name to $latest"
 
             # 3. Use sed to perform an in-place update of the version string
             # This looks for the line containing the package name and replaces the Version value
             #sed -i "s/\(<PackageVersion [^>]*Include=\"$name\" [^>]*Version=\"\)[^\"]*\(\"\)/\1$latest\2/g" "$PROPS"
-          done     
+          #done     
 
         
           
