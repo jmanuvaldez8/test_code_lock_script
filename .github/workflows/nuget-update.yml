@@ -33,33 +33,12 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-      - name: Update NuGet dependencies in xAws.vbproj & update IDTechSDK_STD)
-        run: |
-          git checkout main
-          git pull origin main
+      - name: Install Update Tool
+        run: dotnet tool install --global dotnet-outdated-tool
 
-          PROJ="src/core/xCore/xAws.vbproj"
+      - name: Verify Build
+        # Ensuring the update didn't break the VB project
+        run: dotnet build xAws.vbproj --configuration Release        
 
-          if [ -f "$PROJ" ]; then
-            echo "Updating NuGet packages in $PROJ..."
-
-            # List outdated packages (JSON format)
-            packages=$(dotnet list "$PROJ" package --outdated --include-transitive --format json | \
-                       jq -r '.Outdated[] | .Name')
-
-            for pkg in $packages; do
-              echo "Updating $pkg to latest"
-              dotnet add "$PROJ" package "$pkg"
-            done
-
-            # Explicitly update IDTechSDK_STD to latest
-            echo "Updating IDTechSDK_STD to latest"
-            dotnet add "$PROJ" package IDTechSDK_STD --version *
-
-            git add "$PROJ"
-            git commit -m "Update NuGet dependencies in xAws.vbproj update IDTechSDK_STD)" || echo "No changes"
-            git push origin master
-          else
-            echo "$PROJ not found"
-          fi          
+        
           
