@@ -39,7 +39,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
         run: |
           CURRENT_RC_BRANCH="${{ vars.CURRENT_RC_BRANCH }}"
-          PATCH_BRANCH="UpdateVaasPipelineMaster-$(date +%Y%m%d-%H%M%S)"
+          PATCH_BRANCH="UpdatePpfePipelineMaster-$(date +%Y%m%d-%H%M%S)"
           
           git fetch origin main
           git checkout main
