@@ -48,7 +48,7 @@ jobs:
         # -u: Updates the Directory.Packages.props file
         # -vl Major: Allows updating to the latest Major version
         # --inc xAws: Limits scope to packages used by xAws.vbproj
-        run: dotnet outdated ./xAWS.vbproj -u -vl Major
+        run: dotnet outdated ./ -u -vl Major
 
       - name: Verify Build
         # Ensures the update didn't break the VB project
