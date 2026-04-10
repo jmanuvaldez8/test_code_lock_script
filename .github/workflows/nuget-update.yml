@@ -50,13 +50,11 @@ jobs:
           
           git fetch origin main
           git checkout main
+
+          echo "Checking out new branch: $PATCH_BRANCH"          
+          git checkout -b $PATCH_BRANCH
           
-          git checkout -b $PATCH_BRANCH
-
-          echo "Checking out previous RC branch: $PREVIOUS_RC_BRANCH"          
-          git checkout -b $PATCH_BRANCH
-
-          PROJ="src/core/xCore/xAws.vbproj"
+          PROJ="src/core/xCore/xAWS/xAws.vbproj"
 
           if [ -f "$PROJ" ]; then
             echo "Updating NuGet packages in $PROJ..."
