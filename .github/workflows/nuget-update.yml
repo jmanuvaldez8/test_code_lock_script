@@ -54,7 +54,7 @@ jobs:
           echo "Checking out new branch: $PATCH_BRANCH"          
           git checkout -b $PATCH_BRANCH
           
-          PROJ="src/core/xAWS/xAws.vbproj"
+          PROJ="src/core/xAWS/xAWS.vbproj"
 
           if [ -f "$PROJ" ]; then
             echo "Updating NuGet packages in $PROJ..."
