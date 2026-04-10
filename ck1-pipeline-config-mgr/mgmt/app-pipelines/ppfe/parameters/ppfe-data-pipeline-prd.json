@@ -4,7 +4,7 @@
         "PipelineNameSuffix": "data-pipeline",
         "Environment": "ppfe-prd",
         "RepoName": "PartnerPortal",
-        "BranchName": "rc/2026/03/18-2.86-pp", 
+        "BranchName": "rc/2026/04/10-2.104-pp", 
         "PipelineUtilsDir": "pipeline_utils",
         "CommonTemplatesDir": "common_templates",
         "PollForSourceChanges": "true",
