@@ -80,7 +80,7 @@ jobs:
 
             # 3. Use sed to perform an in-place update of the version string
             # This looks for the line containing the package name and replaces the Version value
-            sed -i "s/\(<PackageVersion [^>]*Include=\"$name\" [^>]*Version=\"\)[^\"]*\(\"\)/\1$latest\2/g" "$PROPS"
+            #sed -i "s/\(<PackageVersion [^>]*Include=\"$name\" [^>]*Version=\"\)[^\"]*\(\"\)/\1$latest\2/g" "$PROPS"
           done     
 
         
