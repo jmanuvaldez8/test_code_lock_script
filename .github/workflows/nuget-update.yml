@@ -44,15 +44,42 @@ jobs:
       - name: Install Update Tool
         run: dotnet tool install --global dotnet-outdated-tool
 
-      - name: Run Update Check and Install
-        # -u: Updates the Directory.Packages.props file
-        # -vl Major: Allows updating to the latest Major version
-        # --inc xAws: Limits scope to packages used by xAws.vbproj
-        run: dotnet outdated src/core/xAWS/ -u -vl Major
+      - name: Update NuGet dependencies in xAws.vbproj & update IDTechSDK_STD)
+        run: |
+          PATCH_BRANCH="UpdateNugetPackages-$(date +%Y%m%d-%H%M%S)"
+          
+          git fetch origin main
+          git checkout main
+          
+          git checkout -b $PATCH_BRANCH
 
-      - name: Verify Build
-        # Ensures the update didn't break the VB project
-        run: dotnet build src/core/xAWS/xAWS.vbproj --configuration Release      
+          echo "Checking out previous RC branch: $PREVIOUS_RC_BRANCH"          
+          git checkout -b $PATCH_BRANCH
+
+          PROJ="src/core/xCore/xAws.vbproj"
+
+          if [ -f "$PROJ" ]; then
+            echo "Updating NuGet packages in $PROJ..."
+
+            # List outdated packages (JSON format)
+            packages=$(dotnet list "$PROJ" package --outdated --include-transitive --format json | \
+                       jq -r '.Outdated[] | .Name')
+
+            for pkg in $packages; do
+              echo "Updating $pkg to latest"
+              dotnet add "$PROJ" package "$pkg"
+            done
+
+            # Explicitly update IDTechSDK_STD to latest
+            echo "Updating IDTechSDK_STD to latest"
+            dotnet add "$PROJ" package IDTechSDK_STD --version *
+
+            git add "$PROJ"
+            git commit -m "Update NuGet dependencies in xAws.vbproj update IDTechSDK_STD)"
+            git push origin $PATCH_BRANCH
+          else
+            echo "$PROJ not found"
+          fi     
 
         
           
