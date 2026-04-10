@@ -45,7 +45,7 @@ jobs:
       #  run: dotnet tool install --global dotnet-outdated-tool
 
       - name: Report Outdated Packages
-        run: dotnet list xAws.vbproj package --outdated
+        run: dotnet list src/core/xAWS/xAWS.vbproj package --outdated
 
       - name: Update NuGet dependencies in xAws.vbproj & update IDTechSDK_STD)
         run: |
