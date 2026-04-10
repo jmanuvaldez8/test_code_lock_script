@@ -64,13 +64,13 @@ jobs:
 
             # List outdated packages (JSON format)
             OUTDATED=$(dotnet list $PROJ package --outdated)
+            echo "$OUTDATED"
             if [[ $OUTDATED == *"version"* ]]; then
               echo "Updates found!"
               echo "$OUTDATED"
               exit 1
             fi
 
-          
             packages=$(dotnet list "$PROJ" package --outdated --include-transitive --format json | \
                        jq -r '.Outdated[] | .Name')
 
