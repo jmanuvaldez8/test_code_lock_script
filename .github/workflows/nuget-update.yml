@@ -38,11 +38,14 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: List files for debugging
-        run: find . -name "*.vbproj"          
+      #- name: List files for debugging
+      #  run: find . -name "*.vbproj"          
 
-      - name: Install Update Tool
-        run: dotnet tool install --global dotnet-outdated-tool
+      #- name: Install Update Tool
+      #  run: dotnet tool install --global dotnet-outdated-tool
+
+      - name: Report Outdated Packages
+        run: dotnet list xAws.vbproj package --outdated
 
       - name: Update NuGet dependencies in xAws.vbproj & update IDTechSDK_STD)
         run: |
