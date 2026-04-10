@@ -1,6 +1,1 @@
-*.slconfig @ckps/secops
-*.ruleset @ckps/secops
-
-# Exclude from requirements
-/src/MobileApp/
-/src/PE/CloudIM/PaxTerminalApp/
+* @ckps/qa
