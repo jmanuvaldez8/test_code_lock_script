@@ -116,10 +116,6 @@ jobs:
           --head $PATCH_BRANCH
 
 
-
-
-          
-      
       - name: Update .mergify.yml workflow in master
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
@@ -134,7 +130,7 @@ jobs:
           echo "Checking out new branch: $PATCH_BRANCH"          
           git checkout -b $PATCH_BRANCH
 
-          FILE="MerchantPortal/.mergify.yml"
+          FILE="PartnerPortal/.mergify.yml"
 
           if [ -f "$FILE" ]; then
             echo "Updating $FILE"
