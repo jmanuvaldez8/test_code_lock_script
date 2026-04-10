@@ -64,7 +64,7 @@ jobs:
           
           # 4. Create the Pull Request using GitHub CLI
           gh pr create \
-          --title "Update ppfe-data-pipeline-prd.json" \
+          --title "Update vaas-data-pipeline-prd.json" \
           --body "This PR was created using the gh cli in a GitHub Action." \
           --base main \
           --head $PATCH_BRANCH
