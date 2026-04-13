@@ -54,8 +54,8 @@ jobs:
         run: |
           PATCH_BRANCH="UpdateNugetPackages-$(date +%Y%m%d-%H%M%S)"
           
-          git fetch origin master
-          git checkout master
+          git fetch origin main
+          git checkout main
 
           echo "Checking out new branch: $PATCH_BRANCH"          
           git checkout -b $PATCH_BRANCH
