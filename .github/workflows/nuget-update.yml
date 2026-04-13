@@ -45,7 +45,9 @@ jobs:
       #  run: dotnet tool install --global dotnet-outdated-tool
 
       - name: Report Outdated Packages
-        run: dotnet list src/core/xAWS/PaymentEngine.vbproj package --outdated
+        run: |
+          dotnet restore src/core/xAWS/PaymentEngine.vbproj --force --verbosity minimal
+          dotnet list src/core/xAWS/PaymentEngine.vbproj package --outdated
 
       - name: Update NuGet dependencies in xAws.vbproj & update IDTechSDK_STD)
         run: |
