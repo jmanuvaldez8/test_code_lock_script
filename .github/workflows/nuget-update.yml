@@ -19,7 +19,7 @@ permissions:
 
 jobs:
   create-rc:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     
       
     steps:
