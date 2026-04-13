@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       pe-stable:
-        description: "Update Payment Engine to Stable?"
+        description: "Run nuget update?"
         required: true
         default: "Yes"
         type: choice
@@ -45,19 +45,19 @@ jobs:
       #  run: dotnet tool install --global dotnet-outdated-tool
 
       - name: Report Outdated Packages
-        run: dotnet list src/core/xAWS/xAWS.vbproj package --outdated             
+        run: dotnet list src/core/xAWS/PaymentEngine.vbproj package --outdated
 
       - name: Update NuGet dependencies in xAws.vbproj & update IDTechSDK_STD)
         run: |
           PATCH_BRANCH="UpdateNugetPackages-$(date +%Y%m%d-%H%M%S)"
           
-          git fetch origin main
-          git checkout main
+          git fetch origin master
+          git checkout master
 
           echo "Checking out new branch: $PATCH_BRANCH"          
           git checkout -b $PATCH_BRANCH
           
-          PROJ="src/core/xAWS/xAWS.vbproj"          
+          PROJ="src/core/xAWS/xAWS.vbproj"
           PROPS="src/core/xAWS/Directory.Packages.props"
 
           echo "Checking for updates in $PROJ..."
@@ -92,3 +92,26 @@ jobs:
           git add $PROPS
           git commit -m "Update Nuget packages"
           git push origin $PATCH_BRANCH 
+
+          echo "Verify IDTechSDKSTD"
+          
+          PE_PROJ="src/core/xAWS/PaymentEngine.vbproj"
+          updateIDTechSDKSTD=$(dotnet list "$PE_PROJ" package --outdated --include-transitive --format json | \
+          grep '^{' | \
+          jq -r '.. | objects | select(.Name == "IDTechSDK_STD") | .LatestVersion')
+
+          echo "found update for IDTechSDKSTD: $updateIDTechSDKSTD"
+          
+          if [ -z "$updateIDTechSDKSTD" ]; then
+            echo "There is no update for IDTechSDK_STD."
+            exit 0
+          fi
+
+          
+
+          # 4. Create the Pull Request using GitHub CLI
+          #gh pr create \
+          #--title "Update the nuget dependancies" \
+          #--body "This PR was created using the gh cli in a GitHub Action." \
+          #--base master \
+          #--head $PATCH_BRANCH
