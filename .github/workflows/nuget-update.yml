@@ -51,6 +51,8 @@ jobs:
           
 
       - name: Update NuGet dependencies in xAws.vbproj & update IDTechSDK_STD)
+        env:
+          DOTNET_ENABLE_WINDOWS_TARGETING: "true"
         run: |
           PATCH_BRANCH="UpdateNugetPackages-$(date +%Y%m%d-%H%M%S)"
           
@@ -99,9 +101,9 @@ jobs:
           echo "Verify IDTechSDKSTD"
           
           PE_PROJ="src/core/xAWS/PaymentEngine.vbproj"
-          updateIDTechSDKSTD=$(dotnet list "$PE_PROJ" package --outdated --include-transitive --format json -p:EnableWindowsTargeting=true | \
+          updateIDTechSDKSTD=$(dotnet list "$PE_PROJ" package --outdated --include-transitive --format json | \
            jq -r '.. | objects | select(.Name == "IDTechSDK_STD") | .LatestVersion')
-
+                     
           
           #updateIDTechSDKSTD=$(dotnet list "$PE_PROJ" package --outdated --include-transitive --format json | \
           #grep '^{' | \
