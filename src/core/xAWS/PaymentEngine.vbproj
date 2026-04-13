@@ -220,6 +220,8 @@
   <ItemGroup>
     <PackageReference Include="IDTechSDK_STD" />
   </ItemGroup>
+  
+
   <!--
   <ItemGroup Condition=" '$(IsMobile)' == 'true' ">
     <Compile Remove="Device\IDTech\*.*"/>
@@ -236,9 +238,6 @@
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>
-  <!-- Default: My Project - Resources
-  - Whenever Resources.resx gets updated, regenerate Resources.Designer.vb
-  -->
   <ItemGroup Condition=" '$(IsMobile)' != 'true' ">
     <Compile Update="My Project\Resources.Designer.vb">
       <DesignTime>True</DesignTime>
@@ -268,7 +267,7 @@
     </Reference>
   </ItemGroup>
 
-  <!-- "After" project for Mobile -->
+
   <Import Project="PaymentEngine.mobile.after.vbproj" Condition=" '$(IsMobile)' == 'true' " />
   -->
 </Project>
