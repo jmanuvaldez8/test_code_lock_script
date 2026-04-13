@@ -46,8 +46,9 @@ jobs:
 
       - name: Report Outdated Packages
         run: |
-          dotnet restore src/core/xAWS/PaymentEngine.vbproj --force --verbosity minimal
-          dotnet list src/core/xAWS/PaymentEngine.vbproj package --outdated
+          dotnet restore src/core/xAWS/PaymentEngine.vbproj -p:EnableWindowsTargeting=true
+          dotnet list src/core/xAWS/PaymentEngine.vbproj package --outdated --include-transitive --format json -p:EnableWindowsTargeting=true
+          
 
       - name: Update NuGet dependencies in xAws.vbproj & update IDTechSDK_STD)
         run: |
