@@ -99,9 +99,13 @@ jobs:
           echo "Verify IDTechSDKSTD"
           
           PE_PROJ="src/core/xAWS/PaymentEngine.vbproj"
-          updateIDTechSDKSTD=$(dotnet list "$PE_PROJ" package --outdated --include-transitive --format json | \
-          grep '^{' | \
-          jq -r '.. | objects | select(.Name == "IDTechSDK_STD") | .LatestVersion')
+          updateIDTechSDKSTD=$(dotnet list "$PE_PROJ" package --outdated --include-transitive --format json -p:EnableWindowsTargeting=true | \
+           jq -r '.. | objects | select(.Name == "IDTechSDK_STD") | .LatestVersion')
+
+          
+          #updateIDTechSDKSTD=$(dotnet list "$PE_PROJ" package --outdated --include-transitive --format json | \
+          #grep '^{' | \
+          #jq -r '.. | objects | select(.Name == "IDTechSDK_STD") | .LatestVersion')
 
           echo "found update for IDTechSDKSTD: $updateIDTechSDKSTD"
           
