@@ -215,7 +215,7 @@
     <None Include="Device\IDTech\*.*" Reason="This makes it visible in Solution Explorer and in Find All" />
     <Compile Include="Device\IDTech\Tools.vb" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' != 'net45' and '$(IsMobile)' != 'true' ">
+  <ItemGroup>
     <PackageReference Include="IDTechSDK_STD" />
   </ItemGroup>
 
