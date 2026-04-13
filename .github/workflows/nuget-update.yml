@@ -48,7 +48,7 @@ jobs:
         env:
           DOTNET_ENABLE_WINDOWS_TARGETING: "true"
         run: |          
-          dotnet restore src/core/xAWS/PaymentEngine.vbproj
+          #dotnet restore src/core/xAWS/PaymentEngine.vbproj
           dotnet list src/core/xAWS/PaymentEngine.vbproj package --outdated 
           
 
