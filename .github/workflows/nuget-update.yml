@@ -45,9 +45,11 @@ jobs:
       #  run: dotnet tool install --global dotnet-outdated-tool
 
       - name: Report Outdated Packages
+        env:
+          DOTNET_ENABLE_WINDOWS_TARGETING: "true"
         run: |          
-          dotnet restore src/core/xAWS/PaymentEngine.vbproj -p:EnableWindowsTargeting=true
-          #dotnet list src/core/xAWS/PaymentEngine.vbproj package --outdated 
+          dotnet restore src/core/xAWS/PaymentEngine.vbproj
+          dotnet list src/core/xAWS/PaymentEngine.vbproj package --outdated 
           
 
       - name: Update NuGet dependencies in xAws.vbproj & update IDTechSDK_STD)
