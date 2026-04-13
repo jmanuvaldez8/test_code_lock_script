@@ -4,16 +4,6 @@
     <UseWindowsForms>true</UseWindowsForms>
     <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
-  <PropertyGroup>
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Runtime)' != 'linux' and '$(Runtime)' != 'osx'">
-    <MyType>Windows</MyType>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>PaymentEngine.snk</AssemblyOriginatorKeyFile>
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Device\Load\**" />
     <EmbeddedResource Remove="Device\Load\**" />
