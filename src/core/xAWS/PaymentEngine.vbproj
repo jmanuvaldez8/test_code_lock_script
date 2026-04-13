@@ -1,0 +1,282 @@
+<Project>
+  <PropertyGroup>
+    <TargetFrameworks>net48;netstandard2.1;net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Platforms>AnyCPU;x64;x86</Platforms>
+  </PropertyGroup>
+  <PropertyGroup>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Runtime)' != 'linux' and '$(Runtime)' != 'osx'">
+    <MyType>Windows</MyType>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>PaymentEngine.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Device\Load\**" />
+    <EmbeddedResource Remove="Device\Load\**" />
+    <None Remove="Device\Load\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Device\OOS9.vb" />
+    <Compile Remove="Device\OOS11.vb" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <Compile Update="Device\frmEPad.vb">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' != 'net48'">
+    <Compile Remove="Device\frmEPad.vb" />
+    <Compile Remove="Device\frmEPad.Designer.vb" />
+    <Compile Remove="Device\ePad.vb" />
+    <EmbeddedResource Remove="Device\frmEPad.resx" />
+    <None Include="Device\frmEPad.vb" Reason="This makes the files visible in Solution Explorer and in Find All" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' != 'netstandard2.1'">
+    <Compile Update="eWic\EwicPosForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="eWic\EwicEligibilityForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="eWic\EwicBalanceForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="eWic\EwicItemsForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="frmDevice.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="frmEmailSupport.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="frmPaymentEngine.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="frmSettingsContainer.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="pnlDeviceSettings.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="pnlGeneralSettings.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+  <Compile Update="FSA\FsaEligibilityForm.vb" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
+    <Compile Remove="frmDevice.vb" />
+    <Compile Remove="frmEmailSupport.vb" />
+    <Compile Remove="frmPaymentEngine.vb" />
+    <Compile Remove="frmOfflineTransactionProcessor.vb" />
+    <Compile Remove="frmSettingsContainer.vb" />
+    <Compile Remove="pnlDeviceSettings.vb" />
+    <Compile Remove="pnlGeneralSettings.vb" />
+    <Compile Remove="OfflineSettingsPanel.vb" />
+    <Compile Remove="Device\Topaz.vb" />
+    <Compile Remove="OfflineProcessing\OfflineProcessor.vb" />
+    <Compile Remove="Tokenization\frmTokenSelector.vb" />
+    <Compile Remove="Tokenization\TokenProcessor.vb" />
+    <EmbeddedResource Remove="frmDevice.resx" />
+    <EmbeddedResource Remove="frmEmailSupport.resx" />
+    <EmbeddedResource Remove="frmPaymentEngine.resx" />
+    <EmbeddedResource Remove="frmOfflineTransactionProcessor.resx" />
+    <EmbeddedResource Remove="frmSettingsContainer.resx" />
+    <EmbeddedResource Remove="pnlDeviceSettings.resx" />
+    <EmbeddedResource Remove="pnlGeneralSettings.resx" />
+    <EmbeddedResource Remove="OfflineSettingsPanel.resx" />
+    <Compile Remove="frmDevice.Designer.vb" />
+    <Compile Remove="frmEmailSupport.Designer.vb" />
+    <Compile Remove="frmPaymentEngine.Designer.vb" />
+    <Compile Remove="frmOfflineTransactionProcessor.Designer.vb" />
+    <Compile Remove="frmSettingsContainer.Designer.vb" />
+    <Compile Remove="pnlDeviceSettings.Designer.vb" />
+    <Compile Remove="pnlGeneralSettings.Designer.vb" />
+    <Compile Remove="OfflineSettingsPanel.Designer.vb" />
+    <Compile Remove="Tokenization\frmTokenSelector.Designer.vb" />
+    <Compile Remove="eWic\*Form.Designer.vb" />
+    <Compile Remove="eWic\*Form.vb" />
+    <EmbeddedResource Remove="eWic\*Form.resx" />
+    <None Include="eWic\*.*" Reason="This makes the files visible in Solution Explorer and in Find All" />
+    <Compile Remove="FSA\*Form.Designer.vb" />
+    <Compile Remove="FSA\*Form.vb" />
+    <EmbeddedResource Remove="FSA\*Form.resx" />
+    <None Include="FSA\*.*" Reason="This makes the files visible in Solution Explorer and in Find All" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
+    <Compile Update="OfflineProcessing\frmOfflineTransactionProcessor.vb">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' != 'net'">
+    <Compile Remove="OfflineProcessing\frmOfflineTransactionProcessor.vb" />
+    <EmbeddedResource Remove="OfflineProcessing\frmOfflineTransactionProcessor.resx" />
+    <Compile Remove="OfflineProcessing\frmOfflineTransactionProcessor.Designer.vb" />
+    <None Include="OfflineProcessing\*.*" Reason="This makes the files visible in Solution Explorer and in Find All" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' != 'netstandard2.1'">
+
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="mscorlib" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System.Management" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.ComponentModel" />
+    <Import Include="System.Data" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Drawing" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Net" />
+    <Import Include="System.Runtime.Serialization" />
+    <Import Include="System.Security" />
+    <Import Include="System.Text" />
+    <Import Include="System.Threading" />
+    <Import Include="System.Web" />
+    <Import Include="System.Xml" />
+    <Import Include="System.Xml.Linq" />
+    <Import Include="xCore.xGateway" />
+    <Import Include="xCore.Forms" />
+    <Import Include="xCore.Forms.xGateway" />
+    <Import Include="xCore.xNow" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)'=='net45'">
+    <PackageReference Include="System.ValueTuple" VersionOverride="4.3.0" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)'!='net45'">
+    <PackageReference Include="System.ValueTuple" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\core\xCore.Forms\xCore.Forms.vbproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(IsMobile)' != 'true'  ">
+    <Reference Include="AxInterop.GIIEPADLib">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\AxInterop.GIIEPADLib.dll</HintPath>
+    </Reference>
+    <Reference Include="SigPlusNET">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\SigPlusNET.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Platform)' == 'x86'">
+    <Reference Include="Hid.Net">
+      <HintPath>..\Dependencies\Hid.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="SIM">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\SIM.dll</HintPath>
+    </Reference>
+    <COMReference Include="OposMSR_CCO">
+      <Guid>{CCB90120-B81E-11D2-AB74-0040054C3719}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="OposPINPad_CCO">
+      <Guid>{CCB90130-B81E-11D2-AB74-0040054C3719}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="OposSigCap_CCO">
+      <Guid>{CCB90190-B81E-11D2-AB74-0040054C3719}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="ENFORMSIGDISPLAYLib">
+      <Guid>{5C049A95-7E2B-11D2-A5CC-006097920D12}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>1</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1' and '$(IsMobile)' != 'true'">
+    <PackageReference Include="System.Configuration.ConfigurationManager" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net45' ">
+    <Compile Remove="Device\IDTech\*.*" />
+    <None Include="Device\IDTech\*.*" Reason="This makes it visible in Solution Explorer and in Find All" />
+    <Compile Include="Device\IDTech\Tools.vb" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' != 'net45' and '$(IsMobile)' != 'true' ">
+    <PackageReference Include="IDTechSDK_STD" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(IsMobile)' == 'true' ">
+    <Compile Remove="Device\IDTech\*.*"/>
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(IsMobile)' != 'true' ">
+    <Compile Remove="modMobileOSX.vb"/>
+  </ItemGroup>
+  <ItemGroup Condition=" '$(IsMobile)' != 'true' ">
+    <Compile Update="FSA\FsaEligibilityForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Tokenization\frmTokenSelector.vb">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+  <!-- Default: My Project - Resources
+  - Whenever Resources.resx gets updated, regenerate Resources.Designer.vb
+  -->
+  <ItemGroup Condition=" '$(IsMobile)' != 'true' ">
+    <Compile Update="My Project\Resources.Designer.vb">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.1'">
+    <PackageReference Include="System.Resources.Extensions" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' != 'netstandard2.1'">
+    <Import Include="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.1' or '$(Platform)' != 'x86'">
+     <Compile Remove="Device\BAC\*.*" />
+     <None Include="Device\BAC\*.*" Reason="This makes it visible in Solution Explorer and in Find All" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' != 'netstandard2.1' and '$(Platform)' == 'x86'">
+    <Reference Include="CSP.EMV.InteropStream">
+      <HintPath>..\Dependencies\CSP.EMV.InteropStream.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <!-- "After" project for Mobile -->
+  <Import Project="PaymentEngine.mobile.after.vbproj" Condition=" '$(IsMobile)' == 'true' " />
+
+</Project>
