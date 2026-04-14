@@ -2,6 +2,15 @@ name: testing yaml codes
 
 on: 
   workflow_dispatch:
+    inputs:
+      run-pipeline:
+        description: "Update Pipeline?"
+        required: true
+        default: "Yes"
+        type: choice
+        options:
+          - "Yes"
+          - "No"
 
   push:
     branches:
@@ -29,9 +38,10 @@ jobs:
           git config user.email "github-actions@github.com"
 
       - name: Check code
+        if: ${{ github.event.inputs.run-pipeline == 'Yes' }}
         run: |
-          if [ "${{ inputs.pe-stable }}" = "Yes" ]; then
+          #if [ "${{ inputs.pe-stable }}" = "Yes" ]; then
             echo "It should run pe to sable"
-          else
+          #else
             echo "NO pe update"
-          fi          
+          #fi          
