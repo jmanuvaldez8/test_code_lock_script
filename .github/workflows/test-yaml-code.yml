@@ -27,6 +27,8 @@ jobs:
     
       
     steps:
+      - name: List root directory
+        run: ls -R
       - name: Checkout repos
         uses: actions/checkout@v4
         with:
