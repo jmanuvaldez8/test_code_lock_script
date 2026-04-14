@@ -38,8 +38,10 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
       
-      - name: List root directory
-        run: ls -R
+      - name: Check Token Permissions
+        run: |
+          echo "Token Permissions JSON:"
+          echo '${{ toJson(secrets.GITHUB_TOKEN) }}'
       
       - name: Check code
         if: ${{ github.event.inputs.run-pipeline == 'Yes' }}
