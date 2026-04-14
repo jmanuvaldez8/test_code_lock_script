@@ -1,16 +1,7 @@
 name: testing yaml codes
 
-on:
+on: 
   workflow_dispatch:
-    inputs:
-      pe-stable:
-        description: "Update Payment Engine to Stable?"
-        required: true
-        default: "Yes"
-        type: choice
-        options:
-          - "Yes"
-          - "No"
 
   push:
     branches:
