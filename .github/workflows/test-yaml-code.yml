@@ -27,8 +27,7 @@ jobs:
     
       
     steps:
-      - name: List root directory
-        run: ls -R
+
       - name: Checkout repos
         uses: actions/checkout@v4
         with:
@@ -38,7 +37,10 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-
+      
+      - name: List root directory
+        run: ls -R
+      
       - name: Check code
         if: ${{ github.event.inputs.run-pipeline == 'Yes' }}
         run: |
